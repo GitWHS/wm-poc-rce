@@ -3,50 +3,66 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>HG_DATA_PWN</title>
+<title>HG_JSB3</title>
 </head>
 <body>
-<h1 id="m">HG_DATA_PWN</h1>
+<h1>HG_JSB3</h1>
 <pre id="out"></pre>
 <script>
 function log(s) {
   document.getElementById("out").textContent += s + "\n";
 }
+window.JSBridge = {
+  _handleMessageFromApp: function (msg) {
+    try { log("cb=" + JSON.stringify(msg).slice(0, 500)); }
+    catch (e) { log("cb=" + String(msg).slice(0, 500)); }
+  }
+};
+window.Native2JSBridge = window.JSBridge;
 log("href=" + location.href);
-log("js=1");
-log("keys=" + Object.keys(window).filter(function (k) {
-  return /bridge|webkit|toutiao|lynx|jsb|xbridge|Annie|TTJS|globalProps|__jsb/i.test(k);
-}).join(","));
-log("globalProps=" + typeof window.__globalProps);
-try {
-  if (window.__globalProps) {
-    log("gp_keys=" + Object.keys(window.__globalProps).join(","));
-  }
-} catch (e) { log("gp_err=" + e); }
-var methods = ["x.getMethodList", "x.canIUse", "x.getAppInfo", "x.getUserInfo",
-  "x.open", "x.downloadFile", "x.updateGecko", "x.request", "x.getAbsolutePath",
-  "openSchema", "app.getStorage", "x.saveDataURL", "x.writeFile"];
-function invoke(name) {
-  return new Promise(function (resolve) {
-    var done = false;
-    function fin(v) { if (!done) { done = true; resolve(v); } }
-    setTimeout(function () { fin({timeout: name}); }, 2000);
-    try {
-      if (window.ToutiaoJSBridge && ToutiaoJSBridge.invoke) {
-        ToutiaoJSBridge.invoke(name, {}, function (res) { fin({via: "TT", res: res}); });
-        return;
-      }
-    } catch (e) { fin({via: "TT-err", e: String(e)}); return; }
-    fin({missing: name});
-  });
+var b = window.JS2NativeBridge;
+log("bridge=" + typeof b);
+if (b) {
+  log("bkeys=" + Object.keys(b).join(","));
+  log("call=" + typeof b.call + " inv=" + typeof b._invokeMethod + " sync=" + typeof b.callSync);
 }
-(async function () {
-  for (var i = 0; i < methods.length; i++) {
-    var r = await invoke(methods[i]);
-    log(methods[i] + " => " + JSON.stringify(r).slice(0, 300));
-  }
-  log("done");
-})();
+var methods = [
+  "x.getMethodList", "x.canIUse", "x.getAppInfo", "x.getUserInfo",
+  "x.open", "x.openSchema", "openSchema", "x.downloadFile",
+  "x.updateGecko", "x.request", "x.getAbsolutePath",
+  "app.getStorage", "x.saveDataURL", "x.writeFile", "x.getGeckoInfo"
+];
+function fire(name) {
+  if (!b) { log(name + " no-bridge"); return; }
+  try {
+    if (b.call) {
+      var r = b.call(name, JSON.stringify({}));
+      log("call " + name + " ret=" + JSON.stringify(r));
+    }
+  } catch (e) { log("call " + name + " err=" + e); }
+  try {
+    if (b._invokeMethod) {
+      var payload = {
+        func: name,
+        params: {},
+        __callback_id: "cb_" + name.replace(/\./g, "_"),
+        __msg_type: "callback",
+        JSSDK: "1",
+        namespace: "host"
+      };
+      var r2 = b._invokeMethod(JSON.stringify(payload));
+      log("inv " + name + " ret=" + JSON.stringify(r2));
+    }
+  } catch (e) { log("inv " + name + " err=" + e); }
+  try {
+    if (b.callSync) {
+      var r3 = b.callSync(name, JSON.stringify({}));
+      log("sync " + name + " ret=" + String(r3).slice(0, 300));
+    }
+  } catch (e) { log("sync " + name + " err=" + e); }
+}
+methods.forEach(fire);
+setTimeout(function () { log("done"); }, 4000);
 </script>
 </body>
 </html>
