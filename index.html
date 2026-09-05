@@ -1,25 +1,42 @@
 <!doctype html>
 <html><head><meta charset="utf-8"><title>WM-POC-OK</title></head>
 <body><h1 id="s">WM-POC-OK</h1>
+<pre id="log"></pre>
 <script>
 document.title='WM-POC-OK';
+var logs=[];
+function note(t){
+  logs.push(t);
+  var el=document.getElementById('log');
+  if(el) el.textContent=logs.join('\n');
+  document.title=t.slice(0,80);
+}
 function call(mod, method, param){
   try{
-    if(window.JSCallJavaMgr){
-      window.JSCallJavaMgr.JSCallNative(JSON.stringify({
-        callback:'window.__wmpoc', module:mod, method:method, param:param||{}, callId:'poc-'+mod+'-'+method
-      }));
-      return true;
-    }
-  }catch(e){ return 'err:'+e; }
-  return false;
+    if(!window.JSCallJavaMgr){ note('NOJSB '+mod+'.'+method); return false; }
+    window.JSCallJavaMgr.JSCallNative(JSON.stringify({
+      callback:'window.__wmpoc', module:mod, method:method, param:param||{},
+      callId:'poc-'+mod+'-'+method
+    }));
+    note('CALL '+mod+'.'+method);
+    return true;
+  }catch(e){ note('ERR '+mod+'.'+method+' '+e); return false; }
 }
-window.__wmpoc = function(){};
+window.__wmpoc=function(res){
+  try{ note('CB '+JSON.stringify(res).slice(0,180)); }
+  catch(e){ note('CB '+String(res)); }
+};
 setTimeout(function(){
-  var r = call('CommonPlugin','GetPerformance',{});
-  call('DevicePlugin','GetClientInfo',{});
-  call('OpenApiPlugin','GetOpenAppInfo',{});
-  document.getElementById('s').innerText = 'JSB='+!!window.JSCallJavaMgr+' call='+r+' keys='+Object.keys(window).filter(function(k){return /js|bridge|wemeet|native|tm|midas/i.test(k)}).join(',');
-}, 500);
+  note('JSB='+!!window.JSCallJavaMgr);
+  call('CommonPlugin','GetPerformance',{});
+  call('CommonPlugin','LoadUrl',{url:'https://httpbin.org/uuid'});
+  call('CommonPlugin','OpenNewPage',{url:'https://httpbin.org/uuid'});
+  call('MeetlogWebPlugin','OpenInnerBrowser',{url:'https://httpbin.org/html'});
+  call('MeetlogWebPlugin','DownloadFile',{
+    url:'https://httpbin.org/bytes/32', fileName:'poc.bin', md5:''
+  });
+  call('DevtoolWebviewPlugin','UpdateOpenSDKSwitchState',{state:1});
+  call('DevtoolWebviewPlugin','GetOpenSDKSwitchState',{});
+}, 400);
 </script>
 </body></html>
