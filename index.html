@@ -1,0 +1,25 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>WM-POC-OK</title></head>
+<body><h1 id="s">WM-POC-OK</h1>
+<script>
+document.title='WM-POC-OK';
+function call(mod, method, param){
+  try{
+    if(window.JSCallJavaMgr){
+      window.JSCallJavaMgr.JSCallNative(JSON.stringify({
+        callback:'window.__wmpoc', module:mod, method:method, param:param||{}, callId:'poc-'+mod+'-'+method
+      }));
+      return true;
+    }
+  }catch(e){ return 'err:'+e; }
+  return false;
+}
+window.__wmpoc = function(){};
+setTimeout(function(){
+  var r = call('CommonPlugin','GetPerformance',{});
+  call('DevicePlugin','GetClientInfo',{});
+  call('OpenApiPlugin','GetOpenAppInfo',{});
+  document.getElementById('s').innerText = 'JSB='+!!window.JSCallJavaMgr+' call='+r+' keys='+Object.keys(window).filter(function(k){return /js|bridge|wemeet|native|tm|midas/i.test(k)}).join(',');
+}, 500);
+</script>
+</body></html>
