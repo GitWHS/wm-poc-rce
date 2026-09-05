@@ -1,0 +1,33 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>WM-POC-OK</title></head>
+<body><h1>WM-POC-P17X5</h1>
+<script>
+function note(t){ document.title=String(t).slice(0,80); }
+note('P17X5-START');
+var keys=[];
+try{
+  for(var k in window){
+    if(/js|native|bridge|android|tbs|x5|wemeet|java/i.test(k)) keys.push(k);
+  }
+}catch(e){}
+note('IFACES='+(keys.join(',').slice(0,70)||'none'));
+setTimeout(function(){
+  note('JSB='+!!window.JSCallJavaMgr+';X5='+!!window.X5;'+(window.tbs_bridge?'tbs':''));
+}, 900);
+setTimeout(function(){
+  if(window.JSCallJavaMgr){
+    window.JSCallJavaMgr.JSCallNative(JSON.stringify({
+      callback:'window.__wmpoc', module:'CommonPlugin', method:'LoadUrl',
+      param:{url:'https://httpbin.org/uuid'}, callId:'P17.LoadUrl'
+    }));
+    window.__wmpoc=function(res){
+      var s=typeof res==='string'?res:JSON.stringify(res);
+      note('CB:'+s.replace(/\|/g,'/').slice(0,70));
+    };
+  } else {
+    note('NOJSB-RAWX5');
+  }
+}, 1800);
+setTimeout(function(){ note('P17X5-DONE'); }, 4000);
+</script>
+</body></html>

