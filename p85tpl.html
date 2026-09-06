@@ -1,0 +1,22 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>P85TPL</title></head>
+<body>
+<script>
+document.title='P85TPL:'+location.host;
+setTimeout(function(){
+  if(!window.JSCallJavaMgr){document.title='P85TPL-NOMGR:'+location.host;return}
+  document.title='P85TPL-HAS:'+location.host;
+  try{
+    window.JSCallJavaMgr.JSCallNative(JSON.stringify({
+      callback:'window.__p',module:'CommonPlugin',method:'GetPerformance',param:{},callId:'TH2'
+    }));
+  }catch(e){
+    document.title='P85TPL-NOJS:'+location.host;
+  }
+}, 600);
+window.__p=function(r){
+  try{r=typeof r==='string'?JSON.parse(r):r}catch(e){}
+  document.title='P85TPLCB:'+(r&&r.callId)+':'+location.host+':'+(r&&r.code);
+};
+</script>
+</body></html>
