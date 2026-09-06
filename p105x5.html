@@ -1,0 +1,13 @@
+<!doctype html><html><head><meta charset="utf-8"><title>P105X5-START</title></head>
+<body><h1>P105 X5 bridge inventory</h1><script>
+(function(){
+  var names=[],seen={};
+  function add(k){if(!seen[k]&&/tbs|x5|bridge|android|webkit|qb|browser|native/i.test(k)){seen[k]=1;names.push(k)}}
+  try{Object.getOwnPropertyNames(window).forEach(add)}catch(e){}
+  try{for(var k in window)add(k)}catch(e){}
+  var known=['tbs','TbsBridge','X5Bridge','QB','qb','browser','android','Android','JSBridge','JsBridge','WebViewJavascriptBridge','webkit','chrome'];
+  var states=[];
+  for(var i=0;i<known.length;i++){var n=known[i],v;try{v=typeof window[n]}catch(e){v='err'}states.push(n+'='+v)}
+  document.title='P105X5:'+states.join('|')+':K='+names.slice(0,18).join(',');
+})();
+</script></body></html>
