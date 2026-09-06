@@ -1,0 +1,31 @@
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>P106X5-START</title></head>
+<body><h1>P106 X5Debug/Midas probe</h1><pre id="out"></pre><script>
+(function(){
+  var samples=[];
+  var ready=0;
+  document.addEventListener('MidasJSBridgeReady',function(){ready++;sample('event')});
+  function sample(label){
+    var type='error', version='';
+    try{
+      type=typeof window.MidasJSBridge;
+      version=type==='object' ? String(window.MidasJSBridge.version||'') : '';
+    }catch(e){type='throw:'+e.name}
+    samples.push(label+'='+type+':'+version+':ready'+ready);
+    document.getElementById('out').textContent=samples.join('\n');
+    document.title='P106X5:'+samples[samples.length-1];
+  }
+  sample('t0');
+  setTimeout(function(){sample('t1')},1000);
+  setTimeout(function(){
+    sample('t3');
+    if(typeof window.MidasJSBridge==='object' && typeof window.MidasJSBridge.call==='function'){
+      document.title='P106X5:CALLING';
+      window.MidasJSBridge.call('launchSign',{},function(){document.title='P106X5:CALLBACK'});
+    }
+  },3000);
+  setTimeout(function(){sample('t8')},8000);
+})();
+</script></body>
+</html>
