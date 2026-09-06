@@ -1,0 +1,22 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>P87TPL</title></head>
+<body>
+<script>
+document.title='P87TPL:'+location.host;
+window.__p=function(r){
+  try{r=typeof r==='string'?JSON.parse(r):r}catch(e){}
+  document.title='P87TPLCB:'+(r&&r.callId)+':'+location.host+':'+(r&&r.code);
+};
+setTimeout(function(){
+  if(!window.JSCallJavaMgr){document.title='P87TPL-NOMGR:'+location.host;return}
+  document.title='P87TPL-HAS:'+location.host;
+  try{
+    window.JSCallJavaMgr.JSCallNative(JSON.stringify({
+      callback:'window.__p',module:'CommonPlugin',method:'GetPerformance',param:{},callId:'TH2'
+    }));
+  }catch(e){
+    document.title='P87TPL-NOJS:'+location.host;
+  }
+}, 600);
+</script>
+</body></html>
